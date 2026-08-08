@@ -1,0 +1,83 @@
+% ============================================================================
+%  PhD Thesis Skeleton — Chemistry (Indian University Standard)
+%  Compile: pdflatex thesis && bibtex thesis && pdflatex thesis && pdflatex thesis
+%  Structure per docs/03-thesis-blueprint.md:
+%  preliminaries -> chapters 1..7 -> bibliography -> appendices
+% ============================================================================
+\documentclass[12pt,a4paper,oneside]{book}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{newtxtext,newtxmath}
+
+% --- Layout: A4, 1.5in left (binding), 1in others, 1.5 line spacing ---
+\usepackage[a4paper,left=1.5in,right=1in,top=1in,bottom=1in]{geometry}
+\usepackage{setspace}
+\onehalfspacing
+
+% --- Chemistry ---
+\usepackage[version=4]{mhchem}
+\usepackage{chemfig}
+\usepackage{siunitx}
+
+% --- Figures & tables ---
+\usepackage{graphicx}
+\graphicspath{{figures/}{chapters/figures/}}
+\usepackage{booktabs,array,multirow}
+\usepackage[font=small,labelfont=bf]{caption}
+\usepackage{subcaption}
+\usepackage{chemscheme}   % 'scheme' float environment for reaction schemes
+
+% --- References (ACS numbered style typical for chemistry theses) ---
+\usepackage[numbers,sort&compress]{natbib}
+\bibliographystyle{unsrtnat}   % or: acs, rsc (via texlive-science)
+
+% --- Hyperlinks, TOC depth ---
+\usepackage[colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue]{hyperref}
+\setcounter{tocdepth}{3}
+\setcounter{secnumdepth}{3}
+
+% --- Page numbering: roman prelims, arabic body ---
+\usepackage{afterpage}
+
+\title{Thesis Title:\\Subtitle}
+\author{Candidate Name\\Indian Institute of Science Education and Research Bhopal}
+
+\begin{document}
+
+% ============================================================================
+% PRELIMINARY PAGES
+% ============================================================================
+\frontmatter
+\pagenumbering{roman}
+
+\input{chapters/prelims}          % title page, certificate, declaration, acknowledgements, abstract
+\tableofcontents
+\listoffigures
+\listoftables
+\input{chapters/abbreviations}    % list of abbreviations & symbols
+
+% ============================================================================
+% MAIN BODY
+% ============================================================================
+\mainmatter
+\pagenumbering{arabic}
+
+\input{chapters/ch1_introduction}
+\input{chapters/ch2_methods}
+\input{chapters/ch3_results_a}
+\input{chapters/ch4_results_b}
+\input{chapters/ch5_results_c}
+\input{chapters/ch6_conclusions}
+
+% ============================================================================
+% BACK MATTER
+% ============================================================================
+\backmatter
+\bibliography{thesis}
+
+\appendix
+\input{chapters/appendix_spectra}
+\input{chapters/appendix_publications}
+
+\end{document}

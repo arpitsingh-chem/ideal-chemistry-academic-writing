@@ -1,0 +1,35 @@
+# --- LaTeX aux files ---
+*.aux
+*.log
+*.out
+*.bbl
+*.blg
+*.toc
+*.lof
+*.lot
+*.synctex.gz
+*.fls
+*.fdb_latexmk
+*.run.xml
+
+# --- Build output PDFs (but keep placeholder figure PDFs tracked) ---
+*.pdf
+!templates/**/figures/*.pdf
+!templates/**/spectra/*.pdf
+!templates/**/figures/**/*.pdf
+
+# --- Secrets (never commit API keys) ---
+.env
+.env.*
+!*.env.example
+*key*.json
+*credentials*.txt
+
+# --- OS junk ---
+.DS_Store
+Thumbs.db
+
+# --- Python ---
+__pycache__/
+*.pyc
+.venv/

@@ -1,0 +1,22 @@
+cff-version: 1.2.0
+message: "If you use this toolkit in preparing academic work, please cite it as follows."
+title: "Ideal Chemistry Academic Writing"
+abstract: >-
+  A research-grade toolkit for writing, reviewing, and submitting chemistry
+  manuscripts, theses, and peer reviews, built from an evidence base of 1,700+
+  publications from the IISER Bhopal Department of Chemistry (257 journals) and
+  publisher-verified author guidelines (ACS, RSC, Wiley-VCH).
+keywords:
+  - academic writing
+  - chemistry
+  - LaTeX templates
+  - thesis template
+  - peer review
+  - research methodology
+  - publishing
+  - IISER Bhopal
+license: CC-BY-4.0
+date-released: "2026-08-08"
+authors:
+  - name: "IISER Bhopal Chemistry Writing Project"
+    affiliation: "Department of Chemistry, IISER Bhopal"

@@ -1,11 +1,13 @@
 cff-version: 1.2.0
 message: "If you use this toolkit in preparing academic work, please cite it as follows."
-title: "Ideal Chemistry Academic Writing"
+title: "PaperForge — Ideal Chemistry Academic Writing (v2)"
 abstract: >-
-  A research-grade toolkit for writing, reviewing, and submitting chemistry
-  manuscripts, theses, and peer reviews, built from an evidence base of 1,700+
-  publications from the IISER Bhopal Department of Chemistry (257 journals) and
-  publisher-verified author guidelines (ACS, RSC, Wiley-VCH).
+  PaperForge: a chemistry-aware manuscript engine that turns structured data,
+  figures and verified references into a submission-ready manuscript, scoring it
+  against 90 machine-readable rules and 261 journal profiles built from 1,616
+  publications of the IISER Bhopal Department of Chemistry. Includes LaTeX/Word/
+  Markdown templates, a journal matcher, reference verification (Crossref,
+  retractions), structure/TOC drawing, and submission packaging.
 keywords:
   - academic writing
   - chemistry
@@ -16,7 +18,8 @@ keywords:
   - publishing
   - IISER Bhopal
 license: CC-BY-4.0
-date-released: "2026-08-08"
+date-released: "2026-10-19"
+version: "2.1.0"
 authors:
   - name: "Arpit Singh"
     affiliation: "Department of Chemistry, IISER Bhopal"

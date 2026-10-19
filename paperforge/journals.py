@@ -19,8 +19,7 @@ from pathlib import Path
 
 from .util import load_json
 
-ROOT = Path(__file__).resolve().parent.parent
-DATA = ROOT / "data"
+DATA = Path(__file__).resolve().parent / "data"   # shipped inside the package
 JOURNALS_CSV = DATA / "journals.csv"
 LIMITS_JSON = DATA / "journal_limits.json"
 CORPUS_JSON = DATA / "publications-openalex.json"

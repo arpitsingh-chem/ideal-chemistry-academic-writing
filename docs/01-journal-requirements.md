@@ -51,7 +51,7 @@
 | 39 | ACS Omega | 9 | ACS (OA) | ~3.7–4.2 | Article |
 | 40 | Advanced Optical Materials | 9 | Wiley-VCH | ~8–9.3 | Research Article, Communication, Review |
 
-*(+ 217 further journals: Chem. Sci. sister journals, IUCr titles (Acta Cryst A), AIP (J. Chem. Phys.), APS (Phys. Rev. E), preprint servers ChemRxiv/bioRxiv, and more. Full list in `data/iiserb-bhopal-chemistry-journals.csv`.)*
+*(+ 217 further journals: Chem. Sci. sister journals, IUCr titles (Acta Cryst A), AIP (J. Chem. Phys.), APS (Phys. Rev. E), preprint servers ChemRxiv/bioRxiv, and more. Full list in `paperforge/data/iiserb-bhopal-chemistry-journals.csv`.)*
 
 ---
 

@@ -139,7 +139,7 @@ exists to catch.
 
 ## 5. Journal knowledge
 
-261 profiles (`data/journals.csv`, `data/journal_limits.json`) with publisher family,
+261 profiles (`paperforge/data/journals.csv`, `paperforge/data/journal_limits.json`) with publisher family,
 verified word/page limits, TOC graphic size, OA status, APC and scope terms.
 Article-type resolution is alias-first, so `"JACS letter"` → communication (2,200 words),
 `"Org. Lett. paper"` → the single Organic Letters type (200-word abstract),
@@ -183,7 +183,7 @@ Top journals by captured output (Angew. Int. Ed. merges the German/International
 | 10 | The Journal of Organic Chemistry | 36 |
 
 The v1 README quoted 1,707 publications / 257 journals and a top-10 that did not match
-the committed data. Those numbers are corrected here; `data/publications-openalex.json`
+the committed data. Those numbers are corrected here; `paperforge/data/publications-openalex.json`
 is the single source of truth and `paperforge journals list` reads from it.
 
 ## 7. Field test (does it work for a stranger?)
@@ -229,7 +229,7 @@ eight Crossref-verified DOIs. `templates/` should contain no unverified number.
 ```
 paperforge/          the engine (chem, journals, project, refs, figures, schemes,
                      checks, draft, render, bundle, cli, llm)
-data/                journal DB, limits, 1,616-work publication corpus
+paperforge/data/      journal DB, limits, 1,616-work publication corpus
 templates/           LaTeX manuscript + thesis, Word, Markdown, review
 docs/                evidence-based guides 01–10 and the v2 architecture (11)
 examples/            demo project + journal-calibrated prose examples
@@ -241,7 +241,7 @@ tests/               136 tests, including adversarial and regression guards
 
 ## Philosophy (unchanged, now enforced by code)
 
-1. **Journals are the spec** — every limit in `data/` traces to a publisher guideline.
+1. **Journals are the spec** — every limit in `paperforge/data/` traces to a publisher guideline.
 2. **Originality is built, not patched** — the engine assembles *your* data and prose; it
    never invents results. `llm-draft` is opt-in and grounded.
 3. **Reproducibility is a chemistry requirement** — formula, mass, yield and evidence

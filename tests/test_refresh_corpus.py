@@ -72,7 +72,7 @@ def test_dry_run_writes_nothing(monkeypatch, tmp_path):
 
 
 def test_committed_corpus_matches_the_documented_counts():
-    data = json.loads((ROOT / "data" / "publications-openalex.json").read_text(encoding="utf-8"))
+    data = json.loads((ROOT / "paperforge" / "data" / "publications-openalex.json").read_text(encoding="utf-8"))
     works = data["works"] if isinstance(data, dict) else data
     venues = {w["journal"] for w in works if w.get("journal") and w["journal"] != "ChemInform"}
     merged = {"Angewandte Chemie International Edition" if v == "Angewandte Chemie" else v

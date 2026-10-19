@@ -238,8 +238,8 @@ CI: the bundle is refused, not silently produced, when the manuscript is not rea
 
 ## 11. Extending
 
-**Add a journal** — append a row to `data/journals.csv` and, if the limits are not a
-family default, an entry to `data/journal_limits.json`:
+**Add a journal** — append a row to `paperforge/data/journals.csv` and, if the limits are not a
+family default, an entry to `paperforge/data/journal_limits.json`:
 
 ```json
 "Journal of Fictional Chemistry": {

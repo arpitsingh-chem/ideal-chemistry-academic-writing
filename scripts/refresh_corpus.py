@@ -26,7 +26,7 @@ from collections import Counter
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-OUT = ROOT / "data" / "publications-openalex.json"
+OUT = ROOT / "paperforge" / "data" / "publications-openalex.json"
 INSTITUTION = "I288749910"           # IISER Bhopal
 MAILTO = "paperforge@example.org"
 API = "https://api.openalex.org"

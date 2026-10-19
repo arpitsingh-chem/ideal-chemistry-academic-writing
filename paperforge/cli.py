@@ -408,9 +408,10 @@ def cmd_doctor(args) -> int:
         print(f"  ✓ chem engine: C14H10NO2S [M+H]+ = {adduct_mass('C14H10NO2S','[M+H]+'):.4f}")
     except Exception as exc:
         print(f"  ✗ chem engine: {exc}")
-    root = Path(__file__).resolve().parent.parent
+    from .journals import CORPUS_JSON
+
     print(f"  data: {len(journal_names())} journals, "
-          f"{(root / 'data' / 'publications-openalex.json').exists() and 'corpus loaded' or 'corpus missing'}")
+          f"{CORPUS_JSON.exists() and 'corpus loaded' or 'corpus missing'}")
     return 0
 
 

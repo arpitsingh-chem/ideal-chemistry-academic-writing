@@ -1,0 +1,9 @@
+entry,product,aryl_group,formula,yield_percent,purity
+3a,3-(phenyl)quinoxalin-2(1H)-one,,C14H10N2O,94,>99% (HPLC)
+3b,3-(4-methylphenyl)quinoxalin-2(1H)-one,4-MeC6H4,C15H12N2O,88,>99% (HPLC)
+3c,3-(4-methoxyphenyl)quinoxalin-2(1H)-one,4-MeOC6H4,C15H12N2O2,81,>98% (HPLC)
+3d,3-(4-chlorophenyl)quinoxalin-2(1H)-one,4-ClC6H4,C14H9ClN2O,76,>99% (HPLC)
+3e,3-(4-(trifluoromethyl)phenyl)quinoxalin-2(1H)-one,4-CF3C6H4,C15H9F3N2O,72,>98% (HPLC)
+3f,3-(4-nitrophenyl)quinoxalin-2(1H)-one,4-NO2C6H4,C14H9N3O3,68,>97% (HPLC)
+3g,3-(2-naphthyl)quinoxalin-2(1H)-one,2-C10H7,C18H12N2O,64,>98% (HPLC)
+3h,3-(thiophen-3-yl)quinoxalin-2(1H)-one,3-thienyl,C12H8N2OS,61,>97% (HPLC)

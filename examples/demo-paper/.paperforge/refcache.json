@@ -1,0 +1,173 @@
+{
+ "10.1021/acs.chemrev.6b00057": {
+  "doi": "10.1021/acs.chemrev.6b00057",
+  "title": "Organic Photoredox Catalysis",
+  "authors": [
+   "Romero, Nathan A.",
+   "Nicewicz, David A."
+  ],
+  "journal": "Chemical Reviews",
+  "short_journal": "Chem. Rev.",
+  "year": 2016,
+  "volume": "116",
+  "issue": "17",
+  "pages": "10075-10166",
+  "publisher": "American Chemical Society (ACS)",
+  "type": "journal-article",
+  "retracted": false,
+  "is_retraction_notice": false,
+  "cited_by": 6232,
+  "source": "crossref"
+ },
+ "10.1021/cr300503r": {
+  "doi": "10.1021/cr300503r",
+  "title": "Visible Light Photoredox Catalysis with Transition Metal Complexes: Applications in Organic Synthesis",
+  "authors": [
+   "Prier, Christopher K.",
+   "Rankic, Danica A.",
+   "MacMillan, David W. C."
+  ],
+  "journal": "Chemical Reviews",
+  "short_journal": "Chem. Rev.",
+  "year": 2013,
+  "volume": "113",
+  "issue": "7",
+  "pages": "5322-5363",
+  "publisher": "American Chemical Society (ACS)",
+  "type": "journal-article",
+  "retracted": false,
+  "is_retraction_notice": false,
+  "cited_by": 9484,
+  "source": "crossref"
+ },
+ "10.1039/b913880n": {
+  "doi": "10.1039/b913880n",
+  "title": "Visible light photoredox catalysis: applications in organic synthesis",
+  "authors": [
+   "Narayanam, Jagan M. R.",
+   "Stephenson, Corey R. J."
+  ],
+  "journal": "Chem. Soc. Rev.",
+  "short_journal": "Chem. Soc. Rev.",
+  "year": 2011,
+  "volume": "40",
+  "issue": "1",
+  "pages": "102-113",
+  "publisher": "Royal Society of Chemistry (RSC)",
+  "type": "journal-article",
+  "retracted": false,
+  "is_retraction_notice": false,
+  "cited_by": 4131,
+  "source": "crossref"
+ },
+ "10.1002/anie.201200223": {
+  "doi": "10.1002/anie.201200223",
+  "title": "Visible‐Light Photoredox Catalysis",
+  "authors": [
+   "Xuan, Jun",
+   "Xiao, Wen‐Jing"
+  ],
+  "journal": "Angewandte Chemie International Edition",
+  "short_journal": "Angew Chem Int Ed",
+  "year": 2012,
+  "volume": "51",
+  "issue": "28",
+  "pages": "6828-6838",
+  "publisher": "Wiley",
+  "type": "journal-article",
+  "retracted": false,
+  "is_retraction_notice": false,
+  "cited_by": 2240,
+  "source": "crossref"
+ },
+ "10.1021/acs.joc.4c01641": {
+  "doi": "10.1021/acs.joc.4c01641",
+  "title": "Base-Mediated Visible-Light-Driven C–H Arylation of Quinoxalin-2(1<i>H</i>)-Ones in Ethanol",
+  "authors": [
+   "Pan, Yitong",
+   "Wang, Luohe",
+   "Shi, Yunhong",
+   "Huang, Guoqing",
+   "Bu, Xiubin",
+   "Yang, Xiaobo",
+   "Zhao, Zhen"
+  ],
+  "journal": "The Journal of Organic Chemistry",
+  "short_journal": "J. Org. Chem.",
+  "year": 2024,
+  "volume": "89",
+  "issue": "19",
+  "pages": "14217-14227",
+  "publisher": "American Chemical Society (ACS)",
+  "type": "journal-article",
+  "retracted": false,
+  "is_retraction_notice": false,
+  "cited_by": 11,
+  "source": "crossref"
+ },
+ "10.1002/wcms.81": {
+  "doi": "10.1002/wcms.81",
+  "title": "The ORCA program system",
+  "authors": [
+   "Neese, Frank"
+  ],
+  "journal": "WIREs Computational Molecular Science",
+  "short_journal": "WIREs Comput Mol Sci",
+  "year": 2012,
+  "volume": "2",
+  "issue": "1",
+  "pages": "73-78",
+  "publisher": "Wiley",
+  "type": "journal-article",
+  "retracted": false,
+  "is_retraction_notice": false,
+  "cited_by": 12147,
+  "source": "crossref"
+ },
+ "10.1016/j.gresc.2024.12.003": {
+  "doi": "10.1016/j.gresc.2024.12.003",
+  "title": "Recent advancements in visible-light-induced direct C(3)–H functionalization of quinoxalin-2(1H)-ones",
+  "authors": [
+   "Xin, Han",
+   "Guo, Yifan",
+   "Hu, Yu",
+   "Chang, Yuanyuan",
+   "Guo, Yujing",
+   "Shi, Linlin"
+  ],
+  "journal": "Green Synthesis and Catalysis",
+  "short_journal": "Green Synthesis and Catalysis",
+  "year": 2026,
+  "volume": "7",
+  "issue": "1",
+  "pages": "34-56",
+  "publisher": "Elsevier BV",
+  "type": "journal-article",
+  "retracted": false,
+  "is_retraction_notice": false,
+  "cited_by": 9,
+  "source": "crossref"
+ },
+ "10.3390/molecules28135030": {
+  "doi": "10.3390/molecules28135030",
+  "title": "Recent Developments in Direct C–H Functionalization of Quinoxalin-2(1H)-Ones via Heterogeneous Catalysis Reactions",
+  "authors": [
+   "Yang, Qiming",
+   "Wang, Hu",
+   "Wang, Xiang",
+   "Lei, Yizhu"
+  ],
+  "journal": "Molecules",
+  "short_journal": "Molecules",
+  "year": 2023,
+  "volume": "28",
+  "issue": "13",
+  "pages": "5030",
+  "publisher": "MDPI AG",
+  "type": "journal-article",
+  "retracted": false,
+  "is_retraction_notice": false,
+  "cited_by": 19,
+  "source": "crossref"
+ }
+}

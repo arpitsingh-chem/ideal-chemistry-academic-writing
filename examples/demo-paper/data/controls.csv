@@ -1,0 +1,7 @@
+entry,variation,yield_percent,conversion_percent
+1,standard conditions,94,99
+2,no photocatalyst,0,6
+3,no light (dark),3,9
+4,TEMPO (2.0 equiv.),0,4
+5,under air,11,27
+6,no aryl diazonium salt,0,0

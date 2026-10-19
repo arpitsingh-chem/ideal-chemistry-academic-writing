@@ -1,0 +1,640 @@
+{
+ "_meta": {
+  "description": "Journal submission limits used by PaperForge. Family defaults are conservative summaries of ACS/RSC/Wiley/Elsevier guidance; per-journal overrides are applied where verified. ALWAYS confirm on the journal's official author-guidelines page before submission.",
+  "last_reviewed": "2026-10-19",
+  "verified_sources": {
+   "acs_toc": "https://pubsapp.acs.org/paragonplus/submission/toc_abstract_graphics_guidelines.pdf",
+   "acs_general": "https://researcher-resources.acs.org/publish/author_guidelines",
+   "angew_notice": "https://onlinelibrary.wiley.com/page/journal/15213773/homepage/notice-to-authors",
+   "rsc_obc": "https://www.rsc.org/publishing/publish-with-us/publish-a-journal-article/organic-and-bimolecular-chemistry",
+   "elsevier_highlights": "https://www.elsevier.com/researcher/author/tools-and-resources/highlights"
+  }
+ },
+ "_families": {
+  "acs": {
+   "publisher": "American Chemical Society",
+   "default_article_type": "article",
+   "article_types": {
+    "article": {
+     "abstract_min": 80,
+     "abstract_max": 300,
+     "body_max_words": 7000,
+     "refs_max": null,
+     "figures_max": null
+    },
+    "letter": {
+     "abstract_min": 50,
+     "abstract_max": 150,
+     "body_max_words": 3000,
+     "refs_max": 50,
+     "figures_max": 5
+    },
+    "communication": {
+     "abstract_min": 50,
+     "abstract_max": 250,
+     "body_max_words": 2200,
+     "refs_max": 50,
+     "figures_max": 5
+    },
+    "review": {
+     "abstract_min": 80,
+     "abstract_max": 300,
+     "body_max_words": 12000,
+     "refs_max": null,
+     "figures_max": null
+    }
+   },
+   "keywords_min": 4,
+   "keywords_max": 8,
+   "title_max_words": 20,
+   "abstract_forbids_citations": true,
+   "abstract_forbids_compound_numbers": false,
+   "toc_required": true,
+   "toc_in_manuscript": true,
+   "toc_width_cm": 8.25,
+   "toc_height_cm": 4.45,
+   "toc_text_max_chars": null,
+   "toc_dpi": 300,
+   "highlights_required": false,
+   "cover_letter_required": true,
+   "data_statement_required": true,
+   "ai_disclosure_required": "recommended",
+   "credit_required": true,
+   "orcid_required": "corresponding"
+  },
+  "rsc": {
+   "publisher": "Royal Society of Chemistry",
+   "default_article_type": "article",
+   "article_types": {
+    "article": {
+     "abstract_min": 80,
+     "abstract_max": 250,
+     "body_max_words": 8000,
+     "refs_max": null,
+     "figures_max": null
+    },
+    "communication": {
+     "abstract_min": 50,
+     "abstract_max": 250,
+     "body_max_words": 3000,
+     "refs_max": 40,
+     "figures_max": 5
+    },
+    "review": {
+     "abstract_min": 80,
+     "abstract_max": 250,
+     "body_max_words": 12000,
+     "refs_max": null,
+     "figures_max": null
+    }
+   },
+   "keywords_min": 0,
+   "keywords_max": 7,
+   "title_max_words": 20,
+   "abstract_forbids_citations": true,
+   "abstract_forbids_compound_numbers": false,
+   "toc_required": true,
+   "toc_in_manuscript": true,
+   "toc_width_cm": 8.0,
+   "toc_height_cm": 4.0,
+   "toc_text_max_chars": 250,
+   "toc_dpi": 600,
+   "highlights_required": false,
+   "cover_letter_required": true,
+   "data_statement_required": true,
+   "ai_disclosure_required": "recommended",
+   "credit_required": true,
+   "orcid_required": "corresponding"
+  },
+  "wiley": {
+   "publisher": "Wiley-VCH / Chemistry Europe",
+   "default_article_type": "article",
+   "article_types": {
+    "article": {
+     "abstract_min": 80,
+     "abstract_max": 200,
+     "body_max_words": 5600,
+     "refs_max": null,
+     "figures_max": 8
+    },
+    "communication": {
+     "abstract_min": 0,
+     "abstract_max": 200,
+     "body_max_words": 2500,
+     "refs_max": 40,
+     "figures_max": 5
+    },
+    "review": {
+     "abstract_min": 80,
+     "abstract_max": 200,
+     "body_max_words": 14000,
+     "refs_max": null,
+     "figures_max": null
+    }
+   },
+   "keywords_min": 3,
+   "keywords_max": 7,
+   "title_max_words": 20,
+   "abstract_forbids_citations": true,
+   "abstract_forbids_compound_numbers": true,
+   "toc_required": true,
+   "toc_in_manuscript": true,
+   "toc_width_cm": 5.5,
+   "toc_height_cm": 5.0,
+   "toc_text_max_chars": 450,
+   "toc_dpi": 300,
+   "highlights_required": false,
+   "cover_letter_required": true,
+   "data_statement_required": true,
+   "ai_disclosure_required": "required",
+   "credit_required": true,
+   "orcid_required": "corresponding"
+  },
+  "elsevier": {
+   "publisher": "Elsevier",
+   "default_article_type": "article",
+   "article_types": {
+    "article": {
+     "abstract_min": 80,
+     "abstract_max": 300,
+     "body_max_words": null,
+     "refs_max": null,
+     "figures_max": null
+    },
+    "review": {
+     "abstract_min": 80,
+     "abstract_max": 300,
+     "body_max_words": null,
+     "refs_max": null,
+     "figures_max": null
+    }
+   },
+   "keywords_min": 3,
+   "keywords_max": 6,
+   "title_max_words": 20,
+   "abstract_forbids_citations": true,
+   "abstract_forbids_compound_numbers": false,
+   "toc_required": false,
+   "toc_in_manuscript": false,
+   "toc_width_cm": 13.0,
+   "toc_height_cm": 5.0,
+   "toc_text_max_chars": null,
+   "toc_dpi": 300,
+   "highlights_required": true,
+   "cover_letter_required": true,
+   "data_statement_required": true,
+   "ai_disclosure_required": "required",
+   "credit_required": true,
+   "orcid_required": "corresponding"
+  },
+  "springer": {
+   "publisher": "Springer",
+   "default_article_type": "article",
+   "article_types": {
+    "article": {
+     "abstract_min": 80,
+     "abstract_max": 250,
+     "body_max_words": null,
+     "refs_max": null,
+     "figures_max": null
+    }
+   },
+   "keywords_min": 4,
+   "keywords_max": 6,
+   "title_max_words": 20,
+   "abstract_forbids_citations": true,
+   "abstract_forbids_compound_numbers": false,
+   "toc_required": false,
+   "toc_in_manuscript": false,
+   "toc_width_cm": null,
+   "toc_height_cm": null,
+   "toc_text_max_chars": null,
+   "toc_dpi": 300,
+   "highlights_required": false,
+   "cover_letter_required": true,
+   "data_statement_required": true,
+   "ai_disclosure_required": "required",
+   "credit_required": true,
+   "orcid_required": "corresponding"
+  },
+  "nature_science": {
+   "publisher": "Nature Portfolio / AAAS",
+   "default_article_type": "article",
+   "article_types": {
+    "article": {
+     "abstract_min": 100,
+     "abstract_max": 200,
+     "body_max_words": 5000,
+     "refs_max": 50,
+     "figures_max": 6
+    },
+    "communication": {
+     "abstract_min": 100,
+     "abstract_max": 200,
+     "body_max_words": 3000,
+     "refs_max": 30,
+     "figures_max": 5
+    }
+   },
+   "keywords_min": 0,
+   "keywords_max": 8,
+   "title_max_words": 20,
+   "abstract_forbids_citations": true,
+   "abstract_forbids_compound_numbers": false,
+   "toc_required": false,
+   "toc_in_manuscript": false,
+   "toc_width_cm": null,
+   "toc_height_cm": null,
+   "toc_text_max_chars": null,
+   "toc_dpi": 300,
+   "highlights_required": false,
+   "cover_letter_required": true,
+   "data_statement_required": true,
+   "ai_disclosure_required": "required",
+   "credit_required": true,
+   "orcid_required": "corresponding"
+  },
+  "_generic": {
+   "publisher": "",
+   "default_article_type": "article",
+   "article_types": {
+    "article": {
+     "abstract_min": 80,
+     "abstract_max": 300,
+     "body_max_words": null,
+     "refs_max": null,
+     "figures_max": null
+    },
+    "communication": {
+     "abstract_min": 50,
+     "abstract_max": 250,
+     "body_max_words": 3000,
+     "refs_max": 40,
+     "figures_max": 5
+    },
+    "review": {
+     "abstract_min": 80,
+     "abstract_max": 300,
+     "body_max_words": null,
+     "refs_max": null,
+     "figures_max": null
+    }
+   },
+   "keywords_min": 3,
+   "keywords_max": 8,
+   "title_max_words": 20,
+   "abstract_forbids_citations": true,
+   "abstract_forbids_compound_numbers": false,
+   "toc_required": false,
+   "toc_in_manuscript": false,
+   "toc_width_cm": 8.0,
+   "toc_height_cm": 4.0,
+   "toc_text_max_chars": 450,
+   "toc_dpi": 300,
+   "highlights_required": false,
+   "cover_letter_required": true,
+   "data_statement_required": true,
+   "ai_disclosure_required": "recommended",
+   "credit_required": true,
+   "orcid_required": "corresponding"
+  }
+ },
+ "journals": {
+  "Chemistry - A European Journal": {
+   "family": "wiley",
+   "article_types": {
+    "article": {
+     "abstract_max": 200,
+     "body_max_words": 5600,
+     "figures_max": 8
+    }
+   },
+   "verified": true
+  },
+  "Angewandte Chemie International Edition": {
+   "family": "wiley",
+   "article_types": {
+    "communication": {
+     "abstract_max": 200,
+     "body_max_words": 2500,
+     "figures_max": 8,
+     "printed_pages": 4
+    },
+    "article": {
+     "abstract_max": 200,
+     "body_max_words": 5000,
+     "printed_pages": 10
+    }
+   },
+   "toc_width_cm": 5.5,
+   "toc_height_cm": 5.0,
+   "toc_alt_width_cm": 11.5,
+   "toc_alt_height_cm": 2.5,
+   "toc_text_max_chars": 450,
+   "verified": true,
+   "source": "https://onlinelibrary.wiley.com/page/journal/15213773/homepage/notice-to-authors"
+  },
+  "Angewandte Chemie": {
+   "family": "wiley",
+   "toc_text_max_chars": 450
+  },
+  "Chemical Communications": {
+   "family": "rsc",
+   "article_types": {
+    "communication": {
+     "abstract_max": 250,
+     "body_max_words": 3000,
+     "refs_max": 40,
+     "figures_max": 5
+    }
+   },
+   "toc_width_cm": 8.0,
+   "toc_height_cm": 4.0,
+   "toc_text_max_chars": 250,
+   "verified": true,
+   "source": "https://www.rsc.org/publishing/publish-with-us/publish-a-journal-article/chemical-communications"
+  },
+  "Organic Letters": {
+   "family": "acs",
+   "article_types": {
+    "letter": {
+     "abstract_max": 200,
+     "body_max_words": 3000,
+     "refs_max": 50,
+     "figures_max": 5
+    }
+   },
+   "abstract_toc_combined_words": 200,
+   "verified": true,
+   "source": "https://researcher-resources.acs.org/publish/author_guidelines?coden=orlef7",
+   "exclusive_types": true
+  },
+  "The Journal of Organic Chemistry": {
+   "family": "acs",
+   "article_types": {
+    "article": {
+     "abstract_max": 300
+    },
+    "communication": {
+     "abstract_max": 150,
+     "body_max_words": 2500
+    }
+   }
+  },
+  "Journal of the American Chemical Society": {
+   "family": "acs",
+   "article_types": {
+    "communication": {
+     "abstract_max": 250,
+     "body_max_words": 2200,
+     "refs_max": 50,
+     "figures_max": 5
+    }
+   },
+   "verified": true,
+   "source": "https://researcher-resources.acs.org/publish/author_guidelines?coden=jacsat"
+  },
+  "Inorganic Chemistry": {
+   "family": "acs",
+   "article_types": {
+    "article": {
+     "abstract_max": 300
+    },
+    "communication": {
+     "abstract_max": 200
+    }
+   }
+  },
+  "ACS Catalysis": {
+   "family": "acs",
+   "article_types": {
+    "article": {
+     "abstract_max": 300
+    },
+    "letter": {
+     "abstract_max": 150
+    }
+   }
+  },
+  "Chemical Science": {
+   "family": "rsc",
+   "article_types": {
+    "article": {
+     "abstract_max": 250,
+     "body_max_words": 8000
+    }
+   }
+  },
+  "Organic & Biomolecular Chemistry": {
+   "family": "rsc",
+   "article_types": {
+    "communication": {
+     "abstract_max": 250,
+     "body_max_words": 3000
+    }
+   },
+   "toc_text_max_chars": 240
+  },
+  "Physical Chemistry Chemical Physics": {
+   "family": "rsc",
+   "article_types": {
+    "article": {
+     "abstract_max": 250,
+     "body_max_words": 8000
+    }
+   }
+  },
+  "Crystal Growth & Design": {
+   "family": "acs",
+   "article_types": {
+    "article": {
+     "abstract_max": 300
+    },
+    "communication": {
+     "abstract_max": 200
+    }
+   }
+  },
+  "CrystEngComm": {
+   "family": "rsc",
+   "article_types": {
+    "communication": {
+     "abstract_max": 250,
+     "body_max_words": 3000
+    }
+   }
+  },
+  "Dalton Transactions": {
+   "family": "rsc",
+   "article_types": {
+    "article": {
+     "abstract_max": 250,
+     "body_max_words": 8000
+    },
+    "communication": {
+     "abstract_max": 250,
+     "body_max_words": 3000
+    }
+   }
+  },
+  "Chemistry - An Asian Journal": {
+   "family": "wiley",
+   "article_types": {
+    "article": {
+     "abstract_max": 200,
+     "body_max_words": 5000
+    }
+   }
+  },
+  "ChemistrySelect": {
+   "family": "wiley"
+  },
+  "ChemPhysChem": {
+   "family": "wiley"
+  },
+  "European Journal of Organic Chemistry": {
+   "family": "wiley",
+   "toc_width_cm": 11.5,
+   "toc_height_cm": 2.5,
+   "toc_alt_width_cm": 5.5,
+   "toc_alt_height_cm": 5.0
+  },
+  "European Journal of Inorganic Chemistry": {
+   "family": "wiley"
+  },
+  "ChemBioChem": {
+   "family": "wiley"
+  },
+  "Asian Journal of Organic Chemistry": {
+   "family": "wiley"
+  },
+  "Journal of Chemical Sciences": {
+   "family": "springer",
+   "article_types": {
+    "article": {
+     "abstract_max": 250
+    }
+   }
+  },
+  "Journal of Molecular Structure": {
+   "family": "elsevier"
+  },
+  "New Journal of Chemistry": {
+   "family": "rsc",
+   "article_types": {
+    "communication": {
+     "abstract_max": 250,
+     "body_max_words": 2500
+    }
+   }
+  },
+  "RSC Advances": {
+   "family": "rsc",
+   "article_types": {
+    "article": {
+     "abstract_max": 250,
+     "body_max_words": 8000
+    }
+   }
+  },
+  "Chemical Reviews": {
+   "family": "acs",
+   "article_types": {
+    "review": {
+     "abstract_max": 300,
+     "body_max_words": 20000
+    }
+   },
+   "toc_width_cm": 5.0,
+   "toc_height_cm": 5.0
+  },
+  "Accounts of Chemical Research": {
+   "family": "acs",
+   "article_types": {
+    "review": {
+     "abstract_max": 250
+    }
+   }
+  },
+  "Nature": {
+   "family": "nature_science",
+   "article_types": {
+    "article": {
+     "abstract_max": 200,
+     "body_max_words": 5000,
+     "refs_max": 50,
+     "figures_max": 6
+    }
+   }
+  },
+  "Nature Chemistry": {
+   "family": "nature_science",
+   "article_types": {
+    "article": {
+     "abstract_max": 200,
+     "body_max_words": 5000,
+     "refs_max": 50,
+     "figures_max": 6
+    }
+   }
+  },
+  "Nature Catalysis": {
+   "family": "nature_science",
+   "article_types": {
+    "article": {
+     "abstract_max": 200,
+     "body_max_words": 5000,
+     "refs_max": 50,
+     "figures_max": 6
+    }
+   }
+  },
+  "Nature Communications": {
+   "family": "nature_science",
+   "article_types": {
+    "article": {
+     "abstract_max": 200,
+     "body_max_words": 5000,
+     "refs_max": null,
+     "figures_max": 10
+    }
+   }
+  },
+  "Science": {
+   "family": "nature_science",
+   "article_types": {
+    "article": {
+     "abstract_max": 125,
+     "body_max_words": 4500,
+     "refs_max": 40,
+     "figures_max": 5
+    }
+   }
+  },
+  "ChemRxiv": {
+   "family": "preprint",
+   "article_types": {
+    "article": {
+     "abstract_min": 0,
+     "abstract_max": 100000,
+     "body_max_words": null
+    }
+   },
+   "toc_required": false,
+   "cover_letter_required": false,
+   "credit_required": false,
+   "data_statement_required": false
+  },
+  "bioRxiv (Cold Spring Harbor Laboratory)": {
+   "family": "preprint",
+   "article_types": {
+    "article": {
+     "abstract_min": 0,
+     "abstract_max": 100000
+    }
+   },
+   "toc_required": false,
+   "credit_required": false
+  }
+ }
+}

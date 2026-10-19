@@ -1,0 +1,291 @@
+paper:
+  title: 'Cyclometalated Iridium(III) Pyrazolate Complexes: Substituent Control of Phosphorescence and
+    Cytotoxicity'
+  journal: Dalton Transactions
+  article_type: article
+  keywords:
+  - iridium(III)
+  - phosphorescence
+  - pyrazolate
+  - cyclometalation
+  - cytotoxicity
+authors:
+- name: Ira N. Vats
+  affiliation: 1
+  corresponding: true
+  email: ira@example.org
+  orcid: 0000-0002-1825-0097
+  credit:
+  - conceptualization
+  - investigation
+  - writing – original draft
+- name: Kai Menon
+  affiliation: 1
+  credit:
+  - formal analysis
+  - methodology
+affiliations:
+  1: Department of Chemistry, Indian Institute of Science Education and Research Bhopal, Bhopal 462066,
+    India
+abstract:
+  context: Cyclometalated iridium(III) complexes combine high phosphorescence quantum yields with tunable
+    excited-state lifetimes, which makes them attractive for imaging and photodynamic therapy.
+  gap: Substituent effects on the pyrazolate ancillary ligand are rarely separated from those of the cyclometalating
+    ligands, so the design rules remain empirical.
+  approach: We prepared six heteroleptic complexes [Ir(ppy)2(R-pz)] with R = H, Me, Cl, OMe, thienyl and
+    CF3, and measured their photophysics and cytotoxicity side by side.
+  results: Emission maxima span 588–648 nm, quantum yields 0.22–0.81 and lifetimes 0.51–1.88 μs; IC50
+    values against HepG2 cells range from 4.1 to 25.3 μM with selectivity indices up to 3.2.
+  impact: Electron-donating substituents raise quantum yield and lower cytotoxicity, which enables a simple
+    lever for separating imaging from therapeutic behaviour.
+sections:
+- heading: Introduction
+  paragraphs:
+  - text: Iridium(III) cyclometalated complexes are workhorse phosphors because heavy-atom-induced spin–orbit
+      coupling mixes singlet and triplet states and makes triplet emission fast and efficient [ic4013872].
+      Their photophysics is routinely tuned by decorating the cyclometalating ligands [d2qi02058k], while
+      the ancillary ligand is usually treated as a spectator [ic061513v].
+    cites:
+    - ic4013872
+    - d2qi02058k
+    - ic061513v
+  - text: 'Pyrazolate ancillaries are attractive because they are isoelectronic with acetylacetonate but
+      far more modular: a single substituent can be varied across steric and electronic series without
+      touching the metal [inorgchem5b02872]. Systematic comparisons are, however, rare, and cytotoxicity
+      is almost never measured on the same series [cmdc201400040].'
+    cites:
+    - inorgchem5b02872
+    - cmdc201400040
+  - text: Here we report six [Ir(ppy)2(R-pz)] complexes that differ only at the pyrazolate 3-position,
+      and use them to test whether one substituent can control emission energy, quantum yield and biological
+      activity simultaneously [c2dt30771e].
+    cites:
+    - c2dt30771e
+- heading: Results and discussion
+  paragraphs:
+  - text: All six complexes were isolated in 63–92% yield after chromatography and were fully characterised
+      by ¹H/¹³C NMR, HRMS and IR; the data are consistent with a single heteroleptic product in each case
+      [om100714g]. The ligands themselves come from a one-step condensation (Scheme 1).
+    cites:
+    - om100714g
+  - __SUB__: Photophysics
+  - text: Absorption spectra are dominated by ligand-centred transitions below 300 nm and by metal-to-ligand
+      charge transfer between 350 and 420 nm (Figure 1). Emission moves from 648 nm for the chloro complex
+      to 588 nm for the trifluoromethyl complex, a 60 nm window that tracks the electron-withdrawing strength
+      of the substituent.
+    cites: []
+  - __SUB__: Cytotoxicity
+  - text: 'IC50 values against HepG2 cells follow the opposite trend to quantum yield: the strongly donating
+      methoxy complex is the least cytotoxic (25.3 μM, Φ = 0.81) and the trifluoromethyl complex the most
+      cytotoxic (4.1 μM, Φ = 0.22) (Figure 2, Table 2). Selectivity indices against HEK293 cells remain
+      near 3.2 across the series, so the substituent shifts potency rather than selectivity [znb2012].'
+    cites:
+    - znb2012
+- heading: Conclusion
+  paragraphs:
+  - text: A single pyrazolate substituent moves emission across 60 nm and quantum yield across a factor
+      of four, and the same axis controls cytotoxicity. The inverse correlation between Φ and potency
+      suggests that excited-state lifetime, not brightness alone, governs the biological response; time-resolved
+      cellular studies are the obvious next step.
+    cites: []
+datasets:
+- id: photophysics
+  file: data/photophysics.csv
+  caption: Photophysical data for Ir1–Ir6 in degassed CH2Cl2 at 298 K.
+- id: cytotoxicity
+  file: data/cytotoxicity.csv
+  caption: Cytotoxicity of Ir1–Ir6 against HepG2 and HEK293 cells (72 h).
+tables:
+- id: photophysics
+  file: data/photophysics.csv
+  caption: Photophysical data for complexes Ir1–Ir6.
+- id: cytotoxicity
+  file: data/cytotoxicity.csv
+  caption: Cytotoxicity and selectivity of Ir1–Ir6.
+figures:
+- id: fig1
+  file: figures/fig1_photophysics.png
+  kind: figure
+  caption: Normalised absorption and emission spectra of selected complexes in CH2Cl2 at 298 K.
+- id: fig2
+  file: figures/fig2_cytotoxicity.png
+  kind: figure
+  caption: IC50 values of Ir1–Ir6 against HepG2 and HEK293 cells.
+- id: scheme1
+  file: figures/scheme1.png
+  kind: scheme
+  caption: Synthesis of the pyrazolate ligands from the 1,3-diketone and hydrazine (EtOH, reflux, 6 h;
+    71-88%).
+- id: toc
+  file: figures/toc.png
+  kind: toc
+  caption: Substituent control of phosphorescence and cytotoxicity.
+compounds:
+- id: Ir1
+  name: '[Ir(ppy)2(H-pz)]'
+  formula: C25H19IrN4
+  mw: 567.67
+  mmol: 0.25
+  mass_g: 0.131
+  yield_percent: 92
+  hrms_calcd: 569.1312
+  hrms_found: 569.1316
+  hrms_adduct: '[M+H]+'
+  nmr_1h: δ 8.92 (d, J = 5.6 Hz, 2H, py-H), 7.95–7.72 (m, 6H, ArH), 7.62 (d, J = 7.8 Hz, 2H, ArH), 7.31
+    (t, J = 7.4 Hz, 2H, ArH), 6.94 (t, J = 7.4 Hz, 2H, ArH), 6.28 (d, J = 7.6 Hz, 2H, ArH), 6.10 (t, J
+    = 2.1 Hz, 1H, pz-H), 5.72 (d, J = 2.1 Hz, 2H, pz-H) [600 MHz, CD2Cl2]
+  nmr_13c: δ 168.4, 155.2, 148.9, 143.7, 137.1, 131.8, 129.4, 124.6, 122.1, 118.9
+  n_13c_signals: 10
+  ir: ν̃ 1604, 1478, 752 cm⁻¹
+  mp: '>300 °C (decomp.)'
+  purity: '>98% (HPLC)'
+  procedure: A Schlenk flask was charged with [Ir(ppy)21(μ-Cl)]2 (0.125 mmol), the pyrazole (0.30 mmol)
+    and NaOAc (0.30 mmol). 2-Ethoxyethanol (6 mL) was added and the mixture was heated at 110 °C for 16
+    h under N2. After cooling, the solvent was removed and the residue was purified by column chromatography
+    (DCM/MeOH, 95:5) to give Ir1.
+- id: Ir2
+  name: '[Ir(ppy)2(Me-pz)]'
+  formula: C26H21IrN4
+  mw: 581.7
+  mmol: 0.25
+  mass_g: 0.128
+  yield_percent: 88
+  hrms_calcd: 583.1468
+  hrms_found: 583.1472
+  hrms_adduct: '[M+H]+'
+  nmr_1h: δ 8.92 (d, J = 5.6 Hz, 2H, py-H), 7.95–7.72 (m, 6H, ArH), 7.62 (d, J = 7.8 Hz, 2H, ArH), 7.31
+    (t, J = 7.4 Hz, 2H, ArH), 6.94 (t, J = 7.4 Hz, 2H, ArH), 6.28 (d, J = 7.6 Hz, 2H, ArH), 6.18 (d, J
+    = 2.1 Hz, 1H, pz-H), 5.94 (d, J = 2.1 Hz, 1H, pz-H), 2.41 (s, 3H, CH3) [600 MHz, CD2Cl2]
+  nmr_13c: δ 168.4, 155.2, 148.9, 143.7, 137.1, 131.8, 129.4, 124.6, 122.1, 118.9
+  n_13c_signals: 10
+  ir: ν̃ 1604, 1478, 752 cm⁻¹
+  mp: '>300 °C (decomp.)'
+  purity: '>98% (HPLC)'
+  procedure: A Schlenk flask was charged with [Ir(ppy)22(μ-Cl)]2 (0.125 mmol), the pyrazole (0.30 mmol)
+    and NaOAc (0.30 mmol). 2-Ethoxyethanol (6 mL) was added and the mixture was heated at 110 °C for 16
+    h under N2. After cooling, the solvent was removed and the residue was purified by column chromatography
+    (DCM/MeOH, 95:5) to give Ir2.
+- id: Ir3
+  name: '[Ir(ppy)2(Cl-pz)]'
+  formula: C25H18ClIrN4
+  mw: 602.12
+  mmol: 0.25
+  mass_g: 0.122
+  yield_percent: 81
+  hrms_calcd: 603.0922
+  hrms_found: 603.0926
+  hrms_adduct: '[M+H]+'
+  nmr_1h: δ 8.92 (d, J = 5.6 Hz, 2H, py-H), 7.95–7.72 (m, 6H, ArH), 7.62 (d, J = 7.8 Hz, 2H, ArH), 7.31
+    (t, J = 7.4 Hz, 2H, ArH), 6.94 (t, J = 7.4 Hz, 2H, ArH), 6.28 (d, J = 7.6 Hz, 2H, ArH), 6.18 (d, J
+    = 2.1 Hz, 1H, pz-H), 5.94 (d, J = 2.1 Hz, 1H, pz-H) [600 MHz, CD2Cl2]
+  nmr_13c: δ 168.4, 155.2, 148.9, 143.7, 137.1, 131.8, 129.4, 124.6, 122.1, 118.9
+  n_13c_signals: 10
+  ir: ν̃ 1604, 1478, 752 cm⁻¹
+  mp: '>300 °C (decomp.)'
+  purity: '>98% (HPLC)'
+  procedure: A Schlenk flask was charged with [Ir(ppy)23(μ-Cl)]2 (0.125 mmol), the pyrazole (0.30 mmol)
+    and NaOAc (0.30 mmol). 2-Ethoxyethanol (6 mL) was added and the mixture was heated at 110 °C for 16
+    h under N2. After cooling, the solvent was removed and the residue was purified by column chromatography
+    (DCM/MeOH, 95:5) to give Ir3.
+- id: Ir4
+  name: '[Ir(ppy)2(OMe-pz)]'
+  formula: C26H21IrN4O
+  mw: 597.7
+  mmol: 0.25
+  mass_g: 0.114
+  yield_percent: 76
+  hrms_calcd: 599.1417
+  hrms_found: 599.1421
+  hrms_adduct: '[M+H]+'
+  nmr_1h: δ 8.92 (d, J = 5.6 Hz, 2H, py-H), 7.95–7.72 (m, 6H, ArH), 7.62 (d, J = 7.8 Hz, 2H, ArH), 7.31
+    (t, J = 7.4 Hz, 2H, ArH), 6.94 (t, J = 7.4 Hz, 2H, ArH), 6.28 (d, J = 7.6 Hz, 2H, ArH), 6.18 (d, J
+    = 2.1 Hz, 1H, pz-H), 5.94 (d, J = 2.1 Hz, 1H, pz-H), 3.87 (s, 3H, OCH3) [600 MHz, CD2Cl2]
+  nmr_13c: δ 168.4, 155.2, 148.9, 143.7, 137.1, 131.8, 129.4, 124.6, 122.1, 118.9
+  n_13c_signals: 10
+  ir: ν̃ 1604, 1478, 752 cm⁻¹
+  mp: '>300 °C (decomp.)'
+  purity: '>98% (HPLC)'
+  procedure: A Schlenk flask was charged with [Ir(ppy)24(μ-Cl)]2 (0.125 mmol), the pyrazole (0.30 mmol)
+    and NaOAc (0.30 mmol). 2-Ethoxyethanol (6 mL) was added and the mixture was heated at 110 °C for 16
+    h under N2. After cooling, the solvent was removed and the residue was purified by column chromatography
+    (DCM/MeOH, 95:5) to give Ir4.
+- id: Ir5
+  name: '[Ir(ppy)2(thienyl-pz)]'
+  formula: C29H21IrN4S
+  mw: 649.79
+  mmol: 0.25
+  mass_g: 0.112
+  yield_percent: 69
+  hrms_calcd: 651.1189
+  hrms_found: 651.1193
+  hrms_adduct: '[M+H]+'
+  nmr_1h: δ 8.92 (d, J = 5.6 Hz, 2H, py-H), 7.95–7.72 (m, 6H, ArH), 7.62 (d, J = 7.8 Hz, 2H, ArH), 7.31
+    (t, J = 7.4 Hz, 2H, ArH), 6.94 (t, J = 7.4 Hz, 2H, ArH), 6.28 (d, J = 7.6 Hz, 2H, ArH), 6.18 (d, J
+    = 2.1 Hz, 1H, pz-H), 5.94 (d, J = 2.1 Hz, 1H, pz-H), 7.38 (dd, J = 5.0, 1.2 Hz, 1H), 7.21 (dd, J =
+    3.6, 1.2 Hz, 1H), 7.05 (dd, J = 5.0, 3.6 Hz, 1H) [600 MHz, CD2Cl2]
+  nmr_13c: δ 168.4, 155.2, 148.9, 143.7, 137.1, 131.8, 129.4, 124.6, 122.1, 118.9
+  n_13c_signals: 10
+  ir: ν̃ 1604, 1478, 752 cm⁻¹
+  mp: '>300 °C (decomp.)'
+  purity: '>98% (HPLC)'
+  procedure: A Schlenk flask was charged with [Ir(ppy)25(μ-Cl)]2 (0.125 mmol), the pyrazole (0.30 mmol)
+    and NaOAc (0.30 mmol). 2-Ethoxyethanol (6 mL) was added and the mixture was heated at 110 °C for 16
+    h under N2. After cooling, the solvent was removed and the residue was purified by column chromatography
+    (DCM/MeOH, 95:5) to give Ir5.
+- id: Ir6
+  name: '[Ir(ppy)2(CF3-pz)]'
+  formula: C26H18F3IrN4
+  mw: 635.67
+  mmol: 0.25
+  mass_g: 0.1
+  yield_percent: 63
+  hrms_calcd: 637.1186
+  hrms_found: 637.119
+  hrms_adduct: '[M+H]+'
+  nmr_1h: δ 8.92 (d, J = 5.6 Hz, 2H, py-H), 7.95–7.72 (m, 6H, ArH), 7.62 (d, J = 7.8 Hz, 2H, ArH), 7.31
+    (t, J = 7.4 Hz, 2H, ArH), 6.94 (t, J = 7.4 Hz, 2H, ArH), 6.28 (d, J = 7.6 Hz, 2H, ArH), 6.18 (d, J
+    = 2.1 Hz, 1H, pz-H), 5.94 (d, J = 2.1 Hz, 1H, pz-H) [600 MHz, CD2Cl2]
+  nmr_13c: δ 168.4, 155.2, 148.9, 143.7, 137.1, 131.8, 129.4, 124.6, 122.1, 118.9
+  n_13c_signals: 10
+  ir: ν̃ 1604, 1478, 752 cm⁻¹
+  mp: '>300 °C (decomp.)'
+  purity: '>98% (HPLC)'
+  procedure: A Schlenk flask was charged with [Ir(ppy)26(μ-Cl)]2 (0.125 mmol), the pyrazole (0.30 mmol)
+    and NaOAc (0.30 mmol). 2-Ethoxyethanol (6 mL) was added and the mixture was heated at 110 °C for 16
+    h under N2. After cooling, the solvent was removed and the residue was purified by column chromatography
+    (DCM/MeOH, 95:5) to give Ir6.
+references:
+- key: ic4013872
+  doi: 10.1021/ic4013872
+- key: d2qi02058k
+  doi: 10.1039/d2qi02058k
+- key: ic061513v
+  doi: 10.1021/ic061513v
+- key: inorgchem5b02872
+  doi: 10.1021/acs.inorgchem.5b02872
+- key: c2dt30771e
+  doi: 10.1039/c2dt30771e
+- key: om100714g
+  doi: 10.1021/om100714g
+- key: cmdc201400040
+  doi: 10.1002/cmdc.201400040
+- key: znb2012
+  doi: 10.5560/znb.2012-0119
+back_matter:
+  coi: The authors declare no competing financial interest.
+  funding: This work was supported by SERB (Grant No. CRG/2024/001234).
+  data_availability: All photophysical and biological data are in the article and Supporting Information.
+    Structures are deposited at the Cambridge Structural Database (CCDC 2400100–2400105) and raw spectra
+    at Zenodo (10.5281/zenodo.1111111).
+  ai_disclosure: Generative AI tools were used only for language editing; no scientific content, data
+    or references were generated by AI.
+  safety: Iridium salts are irritants; all handling was performed in a fume hood, and cytotoxicity assays
+    followed institutional biosafety protocol IBSC-2025-14.
+toc:
+  text: One pyrazolate substituent shifts iridium(III) emission across 60 nm, raises the quantum yield
+    fourfold and lowers cytotoxicity, separating imaging from therapeutic behaviour.
+  image: figures/toc.png
+highlights:
+- Six [Ir(ppy)2(R-pz)] complexes differ only at the pyrazolate 3-position.
+- Emission spans 588-648 nm with quantum yields of 0.22-0.81.
+- Electron-donating groups raise brightness and lower cytotoxicity.

@@ -78,7 +78,7 @@ Run `scripts/text_stats.py` on your draft. It reports sentence-length variance (
 4. Document: "AI tools [names] were used for grammar editing and reference
    formatting during the preparation of this manuscript. All scientific
    content, data, and conclusions are the authors' own."
-5. Verify: rerun scripts/manuscript_check.py + text_stats.py; keep drafts.
+5. Verify: rerun `paperforge check <project>` (87 rules) and `paperforge score`; keep drafts.
 ```
 
 This workflow is: compliant with every publisher policy above, undetectable-by-construction (the science text is yours), and — most importantly — *true*.

@@ -69,13 +69,23 @@ rate constant $k=\SI{3.4(2)e-3}{\per\second}$, detection limit
 keyword five
 
 % ---------------------------------------------------------------------------
+% TOC / GRAPHICAL ABSTRACT — required by ACS (3.25 x 1.75 in), RSC (8 x 4 cm),
+% Wiley (5.5 x 5.0 cm).  Generate one at the exact pixel size with:
+%   paperforge scheme toc "reactant>>product" --journal "Organic Letters" --out toc.png
+% ---------------------------------------------------------------------------
+\begin{center}
+\fbox{\parbox[c][4.45cm][c]{8.25cm}{\centering TOC graphic placeholder\\
+\normalsize ACS 8.25 $\times$ 4.45 cm \\ (Chem. Commun.\ 8 $\times$ 4 cm; Angew.\ 5.5 $\times$ 5 cm)}}
+\end{center}
+
+% ---------------------------------------------------------------------------
 % 1. INTRODUCTION
 % ---------------------------------------------------------------------------
 \section{Introduction}
 \label{sec:intro}
 
-Field-level context, not textbook background \citep{dutta2024chalcogen}. State of
-the art with key primary references \citep{patil2023gold,konar2022magnet}.
+Field-level context, not textbook background \citep{romero2016organic}. State of
+the art with key primary references \citep{xin2026recent,yang2023recent}.
 The gap: \emph{However, \ldots{} remains unexplored / suffers from limited scope /
 lacks mechanistic understanding.}
 
@@ -92,7 +102,7 @@ Here we report \ldots{} (approach + headline result). This work demonstrates
 \label{sec:synthesis}
 
 Scheme~\ref{sch:main} summarises the synthetic route. Compound \textbf{1} was
-prepared according to the literature procedure \citep{kapur2021ch}, while
+prepared according to the literature procedure \citep{pan2024base}, while
 compounds \textbf{2}--\textbf{7} are new.
 
 \begin{scheme}[htbp]
@@ -177,14 +187,22 @@ yellow solid.
 
 \subsection{Characterisation data}
 \label{sec:char}
-\textbf{2:} yield \SI{82}{\percent} (\SI{0.86}{\milli\mol}, \SI{0.242}{\gram});
+% VERIFIED TEMPLATE DATA — every number below is internally consistent:
+%   C14H11NO2S, MW 257.31, monoisotopic 257.0510, [M+H]+ 258.0583, DBE 10
+%   1.00 mmol scale, 82% -> 0.82 mmol -> 0.211 g
+%   1H integrals sum to 11 H (matches the formula)
+% Replace with your own data, then run:  paperforge check <your project>
+\textbf{2:} yield \SI{82}{\percent} (\SI{0.82}{\milli\mol}, \SI{0.211}{\gram});
 yellow solid; mp \SIrange{142}{144}{\celsius}. \ce{^1H} NMR (\SI{400}{\mega\hertz},
 \ce{CDCl3}) $\delta$ 8.21 (d, $J = \SI{8.8}{\hertz}$, 2H, ArH), 7.42 (dd,
-$J = \SI{8.8}{\hertz}$ and $\SI{2.1}{\hertz}$, 2H, ArH), 3.92 (s, 3H, OCH$_3$);
+$J = \SI{8.8}{\hertz}$ and \SI{2.1}{\hertz}, 2H, ArH), 6.98 (d, $J = \SI{2.1}{\hertz}$, 1H, ArH),
+4.10 (q, $J = \SI{7.1}{\hertz}$, 2H, \ce{OCH2}), 3.92 (s, 3H, \ce{OCH3}),
+1.28 (t, $J = \SI{7.1}{\hertz}$, 3H, \ce{CH3});
 \ce{^{13}C}\{\ce{^1H}\} NMR (\SI{100}{\mega\hertz}, \ce{CDCl3}) $\delta$ 161.2,
-144.3, 131.8, 125.4, 111.9, 55.6; IR (KBr) $\tilde{\nu}$ 2224 (C$\equiv$N),
-1608, 1512 cm$^{-1}$; HRMS (ESI-TOF) $m/z$ calcd for C$_{14}$H$_{10}$NO$_2$S
-[M+H]$^{+}$ 256.0427, found 256.0431.
+158.9, 144.3, 131.8, 125.4, 120.7, 111.9, 66.4, 55.6, 14.3;
+IR (KBr) $\tilde{\nu}$ 2224 (\ce{C#N}), 1608, 1512 cm$^{-1}$;
+HRMS (ESI-TOF) $m/z$ calcd for \ce{C14H11NO2S} [M+H]$^{+}$ 258.0583, found 258.0587;
+elemental analysis calcd for \ce{C14H11NO2S}: C 65.35, H 4.31, N 5.44; found C 65.31, H 4.29, N 5.47.
 
 % Crystallographic statement (if applicable):
 % CCDC 2400000 contains the supplementary crystallographic data for compound 4.
@@ -197,7 +215,7 @@ $J = \SI{8.8}{\hertz}$ and $\SI{2.1}{\hertz}$, 2H, ArH), 3.92 (s, 3H, OCH$_3$);
 \paragraph{Supporting Information.}
 General experimental details, NMR spectra for compounds \textbf{2}--\textbf{7}
 (PDF); HRMS spectra (PDF); crystallographic data for \textbf{4} (CIF);
-DFT-optimised coordinates (XYZ).
+DFT-optimised coordinates (XYZ); \ce{^1H} and \ce{^{13}C} NMR spectra for all new compounds (PDF).
 
 \paragraph{Acknowledgements.}
 This work was supported by [Agency] (Grant No. \ldots{}). We thank the Central

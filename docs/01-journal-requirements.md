@@ -1,6 +1,6 @@
 # 01 · Journal Requirements — IISER Bhopal Chemistry Portfolio
 
-**Evidence base:** 1,646–1,707 publications by 30 IISER Bhopal Department of Chemistry faculty (2009–2026, OpenAlex), spanning **257 distinct journals**. This document analyses the journals where the department actually publishes, the **author-guideline requirements** of each publisher family (ACS, RSC, Wiley-VCH), and the common threads that define an *ideal* submission.
+**Evidence base:** 1,616 publications by 30 IISER Bhopal Department of Chemistry faculty (2009–2026, OpenAlex), spanning **252 distinct journals** (plus preprints); the engine maintains **261 journal profiles**. This document analyses the journals where the department actually publishes, the **author-guideline requirements** of each publisher family (ACS, RSC, Wiley-VCH), and the common threads that define an *ideal* submission.
 
 > ⚠️ **Currency note:** Impact factors move every June (JCR release). Figures below are the most recent published values at the time of writing; always confirm the current IF, article-type limits, and fees on the journal's official author-guidelines page before submission.
 
@@ -128,7 +128,7 @@
 
 ---
 
-## 3. The common threads — what ALL 257 journals require
+## 3. The common threads — what ALL 252 journals require
 
 Synthesised from the guidelines above, an *ideal* chemistry manuscript must always have:
 

@@ -44,7 +44,7 @@
 - [ ] AI-use statement if applicable.
 
 ## F. Final technical pass
-- [ ] `python3 scripts/manuscript_check.py main.tex` → 0 errors.
+- [ ] `python3 -m paperforge check <project>` → 0 errors, score ≥ 90 (or `--file main.tex` for a draft that is not a project).
 - [ ] `python3 scripts/doi2bib.py $(grep -oP '10\.\S+' main.tex | sort -u)` → all DOIs resolve.
 - [ ] `python3 scripts/text_stats.py main.tex` → read the rhythm profile (false-positive alarm only).
 - [ ] PDF compiles from a clean checkout (LaTeX) or template PDF export (Word).

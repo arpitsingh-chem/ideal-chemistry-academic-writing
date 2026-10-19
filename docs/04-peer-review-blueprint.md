@@ -1,6 +1,6 @@
 # 04 · The Ideal Peer Review — Blueprint for Chemists
 
-Peer review is the quality gate of the 257 journals in the portfolio. This guide turns you into the reviewer editors trust and authors thank — and mirrors what reviewers will do to *your* manuscripts (write papers accordingly).
+Peer review is the quality gate of the 252 journals in the portfolio. This guide turns you into the reviewer editors trust and authors thank — and mirrors what reviewers will do to *your* manuscripts (write papers accordingly).
 
 ---
 

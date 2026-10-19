@@ -1,6 +1,6 @@
 # 02 · The Ideal Chemistry Research Paper — Section-by-Section Specification
 
-This blueprint synthesises the requirements of the 257 journals in the IISER Bhopal chemistry portfolio (see [01-journal-requirements.md](01-journal-requirements.md)) into one actionable specification. **Follow this and you satisfy >95% of a journal's formal requirements before you even look at its guidelines page.**
+This blueprint synthesises the requirements of the 252 journals in the IISER Bhopal chemistry portfolio (261 journal profiles are maintained by the engine) (see [01-journal-requirements.md](01-journal-requirements.md)) into one actionable specification. **Follow this and you satisfy >95% of a journal's formal requirements before you even look at its guidelines page.**
 
 ---
 
@@ -10,7 +10,7 @@ This blueprint synthesises the requirements of the 257 journals in the IISER Bho
 |------|-----------------|------|
 | Systematic literature review | OpenAlex API, Google Scholar, PubMed, CORE | ☐ |
 | Reference manager + BibTeX/CSL | Zotero (free, Better BibTeX plugin) | ☐ |
-| Journal shortlist (top 3) | `scripts/journal_matcher.py` + journal scope pages | ☐ |
+| Journal shortlist (top 3) | `paperforge journals match "your topic"` | ☐ |
 | Read 5 recent papers *from your target journal* | publisher site | ☐ |
 | Copy the journal's template | ACS/RSC/Wiley template downloads | ☐ |
 | Raw data + spectra + CIFs organised | lab notebook, electronic archive | ☐ |
@@ -31,7 +31,7 @@ This blueprint synthesises the requirements of the 257 journals in the IISER Bho
 - Full names, ORCID iDs (corresponding author mandatory at ACS/Wiley; recommended for all).
 - Complete institutional addresses; footnote current addresses if different.
 - Corresponding author with e-mail; mark with asterisk + "To whom correspondence should be addressed".
-- **Authorship ethics:** every named author made a significant intellectual contribution (CRediT will ask which). No gift/honorary authors (IISER Bhopal and all 257 journals follow ICMJE/COPE norms).
+- **Authorship ethics:** every named author made a significant intellectual contribution (CRediT will ask which). No gift/honorary authors (IISER Bhopal and all analysed journals follow ICMJE/COPE norms).
 
 ## 3. Abstract (150–300 words)
 

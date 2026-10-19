@@ -63,14 +63,17 @@ hazards encountered.
 
 A flame-dried Schlenk tube was charged with 1 (1.00 mmol, 0.212 g), catalyst
 (5 mol%), dry THF (5 mL) under N₂; stirred at 60 °C for 12 h; purified by
-column chromatography (hexane/EtOAc 9:1).
+column chromatography (hexane/EtOAc 9:1) to give 2.
 
 ## Characterisation data
 
-**2:** yellow solid, 82% (0.86 mmol, 0.242 g); mp 142–144 °C.
-¹H NMR (400 MHz, CDCl₃) δ 8.21 (d, J = 8.8 Hz, 2H), 3.92 (s, 3H, OCH₃);
-¹³C{¹H} NMR (100 MHz, CDCl₃) δ 161.2, 144.3, 55.6; HRMS (ESI-TOF) m/z calcd
-for C₁₄H₁₀NO₂S [M+H]⁺ 256.0427, found 256.0431.
+**2:** yellow solid, 82% (0.82 mmol, 0.211 g); mp 142–144 °C.
+¹H NMR (400 MHz, CDCl₃) δ 8.21 (d, J = 8.8 Hz, 2H, ArH), 7.42 (dd,
+J = 8.8, 2.1 Hz, 2H, ArH), 6.98 (d, J = 2.1 Hz, 1H, ArH), 4.10 (q,
+J = 7.1 Hz, 2H, OCH₂), 3.92 (s, 3H, OCH₃), 1.28 (t, J = 7.1 Hz, 3H, CH₃);
+¹³C{¹H} NMR (100 MHz, CDCl₃) δ 161.2, 158.9, 144.3, 131.8, 125.4, 120.7,
+111.9, 66.4, 55.6, 14.3; IR (KBr) ν̃ 2224 (C≡N), 1608, 1512 cm⁻¹;
+HRMS (ESI-TOF) m/z calcd for C₁₄H₁₁NO₂S [M+H]⁺ 258.0583, found 258.0587.
 
 **Supporting Information.** General experimental details (PDF); NMR spectra
 for 2–7 (PDF); HRMS spectra (PDF); crystallographic data for 4 (CIF);

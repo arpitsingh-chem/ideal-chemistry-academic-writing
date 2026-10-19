@@ -2,31 +2,86 @@ name: manuscript-lint
 
 on:
   push:
-    paths: ['**.tex', '**.md', 'scripts/**']
+    paths: ['paperforge/**', 'data/**', 'templates/**', 'examples/**', 'tests/**', '**.tex']
   pull_request:
+  workflow_dispatch:
 
 jobs:
-  check:
+  test:
+    name: engine tests (python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.10', '3.12']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install
+        run: |
+          python -m pip install -U pip
+          python -m pip install -e ".[figures,docx,structures,dev]"
+      - name: Environment self-test
+        run: python -m paperforge doctor
+      - name: Tests (offline)
+        run: python -m pytest tests/ -q -m "not network"
+      - name: Rule-code contract
+        run: |
+          python -m paperforge rules > /tmp/rules.txt
+          test "$(wc -l < /tmp/rules.txt)" -ge 80
+      - name: Demo project must score A+
+        run: python -m paperforge score examples/demo-paper --min 95
+
+  manuscript:
+    name: demo manuscript and PDF
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Run manuscript compliance checker on templates
+      - run: |
+          python -m pip install -U pip
+          python -m pip install -e ".[figures,docx,structures]"
+          python -m pip install pypdf
+      - name: Compose manuscript
+        run: python -m paperforge draft examples/demo-paper --format all --cover-letter
+      - name: Compile PDF
+        uses: wtfjoke/setup-tectonic@v3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Tectonic compile
+        working-directory: examples/demo-paper/build
         run: |
-          python3 scripts/manuscript_check.py templates/latex/manuscript/main.tex --style acs || true
-          python3 scripts/text_stats.py templates/latex/manuscript/main.tex
-      - name: Validate data files
-        run: |
-          python3 - <<'EOF'
-          import csv, json
-          with open('data/iiserb-bhopal-chemistry-journals.csv') as f:
-              rows = list(csv.DictReader(f))
-          assert len(rows) > 200, "journal dataset too small"
-          with open('data/iiserb-bhopal-scholars.csv') as f:
-              rows2 = list(csv.DictReader(f))
-          assert len(rows2) >= 100, "scholar dataset too small"
-          json.load(open('data/publications-sample.json'))
-          print("data validation OK:", len(rows), "journals,", len(rows2), "scholars")
-          EOF
+          tectonic -X compile manuscript.tex
+          python - <<'PY'
+          from pypdf import PdfReader
+          r = PdfReader("manuscript.pdf")
+          assert len(r.pages) >= 6, len(r.pages)
+          text = "".join(p.extract_text() or "" for p in r.pages)
+          assert "[?]" not in text, "unresolved citations"
+          print(f"PDF OK: {len(r.pages)} pages")
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: demo-manuscript
+          path: |
+            examples/demo-paper/build/manuscript.pdf
+            examples/demo-paper/build/manuscript.docx
+            examples/demo-paper/build/cover_letter.md
+
+  guard-rails:
+    name: the checker must catch what it claims to catch
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -e ".[figures,docx,structures,dev]"
+      - name: Planted defects are detected
+        run: python -m pytest tests/test_checks.py -q -k "bug or invalid or missing or critical"
+      - name: Templates contain no impossible chemistry
+        run: python scripts/check_template_chemistry.py

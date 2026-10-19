@@ -161,6 +161,7 @@ def tex_escape(text: str) -> str:
         nonlocal s
         s = s.replace(token, key)
 
+    stash("¹³C{¹H}", r"\ce{^{13}C\{^1H\}}")   # before the single-nucleus tokens
     stash("¹H", r"\ce{^1H}")
     stash("¹³C", r"\ce{^{13}C}")
     stash("cm⁻¹", r"cm$^{-1}$")
@@ -248,7 +249,9 @@ def to_latex(doc: Document, project: Project | None = None, si: bool = False) ->
                 body.append(rf"\subsection{{{tex_escape(para['text'][7:])}}}")
                 continue
             txt = tex_escape(para["text"])
-            txt = CITE_MARK.sub(lambda m: r"\cite{" + m.group(1) + "}", txt)
+            # tex_escape has already run over the marker, so keys with "_" arrive
+            # as "unicode\_title"; unescape them or \cite dies with \endcsname.
+            txt = CITE_MARK.sub(lambda m: r"\cite{" + m.group(1).replace("\\_", "_") + "}", txt)
             cites = [c.strip() for c in (para.get("cites") or []) if str(c).strip()]
             if cites:
                 txt = txt.rstrip() + r"~\cite{" + ",".join(cites) + "}"

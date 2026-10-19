@@ -43,7 +43,7 @@ command output, not a description of it.
 
 ```bash
 git clone https://github.com/arpitsingh-chem/ideal-chemistry-academic-writing && cd $_
-python3 -m pytest tests/ -q                      # 165 passed, 3 network
+python3 -m pytest tests/ -q                      # 173 passed, 3 network
 python3 -m paperforge check examples/demo-paper  # 100.0/100
 python3 -m paperforge ingest <your-folder> --out <project>
 ```

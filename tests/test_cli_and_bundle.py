@@ -155,3 +155,18 @@ def test_checklist_marks_manual_items(tmp_path, capsys):
     text = (tmp_path / "s" / "CHECKLIST.md").read_text()
     assert "Journal limits confirmed" in text
     assert "Readiness score" in text
+
+
+def test_llm_draft_reports_an_unreachable_provider_cleanly(monkeypatch, tmp_path, capsys):
+    """A missing/offline model must be a message and exit 2, not a traceback."""
+    import urllib.error
+
+    from paperforge import cli, llm
+
+    def boom(*a, **k):
+        raise urllib.error.URLError("Connection refused")
+
+    monkeypatch.setattr(llm, "draft_with_llm", boom)
+    rc = cli.main(["llm-draft", str(DEMO)])
+    assert rc == 2
+    assert "LLM request failed" in capsys.readouterr().err

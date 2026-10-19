@@ -196,7 +196,7 @@ Tables wider than five columns are wrapped in `\resizebox`; headers are humanise
 
 ---
 
-## 8. `checks.py` — 87 rules, one report
+## 8. `checks.py` — 113 rules, one report
 
 `Report.add(code, severity, dimension, message, hint)` is the only way to record a
 finding. `check_project()` runs eight dimension checkers, then `score()` applies weights:

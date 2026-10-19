@@ -1,11 +1,11 @@
 # PaperForge — an ideal chemistry academic-writing engine
 
-[![tests](https://img.shields.io/badge/tests-165%20passing-brightgreen)](#verification)
-[![rules](https://img.shields.io/badge/rules-91-blue)](#the-rule-set)
-[![version](https://img.shields.io/badge/version-2.0.0-informational)](#)
+[![tests](https://img.shields.io/badge/tests-173%20passing-brightgreen)](#verification)
+[![rules](https://img.shields.io/badge/rules-113-blue)](#the-rule-set)
+[![version](https://img.shields.io/badge/version-2.3.0-informational)](#)
 
 **Turn a folder of CSV tables, figures, spectra metadata and DOIs into a submission-ready
-chemistry manuscript — checked against 91 machine-readable rules, 261 journal profiles and
+chemistry manuscript — checked against 113 machine-readable rules, 261 journal profiles and
 the chemistry itself.**
 
 > v1 of this repository was a *documentation and template* collection: excellent prose, but
@@ -17,7 +17,7 @@ the chemistry itself.**
              ┌──────────────┐    ┌───────────────┐    ┌──────────────┐
   paper.yaml │  compose     │ →  │  verify       │ →  │  package     │
   data/*.csv │  (draft.py)  │    │  (checks.py)  │    │  (bundle.py) │
-  figures/   │  MD/TeX/DOCX │    │  87 rules     │    │  zip+checklist│
+  figures/   │  MD/TeX/DOCX │    │ 113 rules     │    │  zip+checklist│
   refs.bib   └──────────────┘    └───────────────┘    └──────────────┘
                      ↑                   ↑
               chem.py (masses, DBE,   journals.py (261 profiles,
@@ -194,10 +194,16 @@ determinism, retraction detection and PDF rendering. **Mean 9.1/10**, and the tw
 it found (a letter-spaced abstract from a string-valued field, and a missed retraction) are
 fixed in v2.2 with regression tests.
 
+`HARD-CASE-REPORT.md` is the adversarial follow-up: one project that is hostile in every
+dimension at once (Latin-1 over decimal commas, duplicate rows, a retracted DOI, a
+citation key containing `_`, a table whose CSV is missing, and a manuscript that is
+formally perfect but scientifically wrong). It found **14 defects, 8 of them silent** —
+including a swap of two yields that scored 95.2 A+. All are fixed in v2.3.
+
 ## 8. Verification
 
 ```bash
-python3 -m pytest tests/ -q            # 165 passed (+3 network)
+python3 -m pytest tests/ -q            # 173 passed (+3 network)
 python3 -m paperforge check examples/demo-paper          # 100.0 / 100
 python3 -m paperforge refs verify examples/demo-paper    # 8/8 verified
 cd examples/demo-paper/build && tectonic -X compile manuscript.tex   # 8 pages

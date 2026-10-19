@@ -19,6 +19,7 @@ Nothing is fabricated: missing prose stays a clearly marked ``TODO``.
 from __future__ import annotations
 
 import csv
+import io
 import json
 import re
 from pathlib import Path
@@ -30,7 +31,7 @@ IMAGE_EXT = {".png", ".jpg", ".jpeg", ".tif", ".tiff", ".svg", ".pdf", ".eps"}
 
 COLUMN_SYNONYMS = {
     "id": ["id", "label", "compound", "entry", "no", "no.", "code"],
-    "name": ["name", "compound name", "product", "iupac", "structure"],
+    "name": ["name", "compound name", "compound", "product", "iupac", "structure"],
     "formula": ["formula", "molecular formula", "mf"],
     "mw": ["mw", "molar mass", "molecular weight", "mr"],
     "mmol": ["mmol", "mmoles", "millimol", "scale"],
@@ -76,27 +77,63 @@ def _map_columns(header: list[str]) -> dict[str, str]:
     return mapping
 
 
+def _number(value: str) -> float | None:
+    """Parse '1,234.5', '1.234,5', '89,5' and '1,234' the way a human wrote them.
+
+    Stripping non-digits turns '89,5' into 895 -- a silent 10x error that no
+    later check can see.  When both separators appear, the last one wins; a
+    single comma is a thousands separator only when it groups exactly three
+    digits, otherwise it is the decimal point.
+    """
+    v = re.sub(r"[^0-9eE+\-.,]", "", (value or "").strip())
+    if not v:
+        return None
+    if "," in v and "." in v:
+        v = v.replace(",", "") if v.rfind(".") > v.rfind(",") else v.replace(".", "").replace(",", ".")
+    elif "," in v:
+        head, _, tail = v.partition(",")
+        thousands = len(tail) == 3 and head not in ("", "0") and head.lstrip("+-").isdigit()
+        v = v.replace(",", "") if thousands else v.replace(",", ".")
+    try:
+        return float(v)
+    except ValueError:
+        return None
+
+
 def _coerce(field: str, value: str):
     value = (value or "").strip()
     if value == "":
         return None
     if field in {"mw", "mmol", "mass_g", "yield_percent", "hrms_calcd", "hrms_found"}:
-        cleaned = re.sub(r"[^0-9eE+\-.]", "", value)
-        try:
-            return float(cleaned)
-        except ValueError:
-            return value
+        num = _number(value)
+        return value if num is None else num
     return value
 
 
 def _read_csv(path: Path) -> tuple[list[str], list[dict]]:
-    with path.open(newline="", encoding="utf-8-sig") as fh:
-        sample = fh.read(4096)
-        fh.seek(0)
+    data = path.read_bytes()
+    if data.startswith(b"\xef\xbb\xbf"):     # BOM survives a latin-1 fallback
+        data = data[3:]
+    try:
+        text = data.decode("utf-8")
+    except UnicodeDecodeError:
+        # Excel on a European locale writes Latin-1; that is data, not garbage.
+        text = data.decode("latin-1")
+    return _read_csv_text(text)
+
+
+def _read_csv_text(text: str) -> tuple[list[str], list[dict]]:
+    with io.StringIO(text, newline="") as fh:
+        # csv.Sniffer picks ',' on a European export because the decimal commas
+        # outnumber the real separator.  The header line has no decimals, so
+        # count separators there instead.
+        header = text.splitlines()[0] if text.splitlines() else ""
+        delim = max(",;\t", key=header.count) if any(c in header for c in ",;\t") else ","
         try:
-            dialect = csv.Sniffer().sniff(sample, delimiters=",;\t")
+            dialect = csv.Sniffer().sniff(header, delimiters=delim)
         except csv.Error:
             dialect = csv.excel
+            dialect.delimiter = delim
         reader = csv.DictReader(fh, dialect=dialect)
         rows = [r for r in reader if any((v or "").strip() for v in r.values())]
         header = list(reader.fieldnames or [])

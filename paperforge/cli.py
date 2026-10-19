@@ -122,7 +122,7 @@ def cmd_refs(args) -> int:
         added = add_dois(project.root, args.dois, mailto=args.mailto)
         for a in added:
             print(f"  {a.get('status','?'):<10} {a.get('doi')}  {a.get('title','')[:60]}")
-        print("\nAdd the verified entries to the `references:` block (or use `paperforge refs add --write`).")
+        print("\nAdd the verified entries to the `references:` block in paper.yaml.")
         return 0
     if args.action == "verify":
         project = _load(args.path)
@@ -350,9 +350,11 @@ def _all_rule_codes():
     import inspect
     import re as _re
     from . import checks as module
+    from . import figures as figmod
 
-    src = inspect.getsource(module)
-    return set(_re.findall(r'"((?:STR|EVI|CHEM|REF|FIG|TAB|JNL|ETH|STY|GRD|FILE)-[A-Z0-9-]+)"', src))
+    # check() re-emits the TOC-* codes from figures.py, so both modules count.
+    src = inspect.getsource(module) + inspect.getsource(figmod)
+    return set(_re.findall(r'"((?:STR|EVI|CHEM|REF|FIG|TAB|TOC|JNL|ETH|STY|GRD|FILE)-[A-Z0-9-]+)"', src))
 
 
 def cmd_scheme(args) -> int:
@@ -416,7 +418,12 @@ def cmd_llm_draft(args) -> int:  # pragma: no cover - needs a live model
     from .llm import draft_with_llm
 
     project = _load(args.path)
-    text = draft_with_llm(project, provider=args.provider, model=args.model)
+    try:
+        text = draft_with_llm(project, provider=args.provider, model=args.model)
+    except (OSError, KeyError, ValueError) as exc:
+        raise CliError(f"LLM request failed ({exc}); is {args.provider} reachable and configured?") from exc
+    if not text.strip():
+        raise CliError(f"{args.provider} returned an empty draft")
     out = write_text(Path(args.out or project.root / "build" / "llm_draft.md"), text)
     print(f"wrote {out}")
     return 0

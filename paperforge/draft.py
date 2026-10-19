@@ -197,7 +197,7 @@ def characterisation_line(c: Compound) -> str:
 
 def experimental_block(c: Compound) -> dict:
     head = f"Compound {c.id}"
-    if c.name:
+    if c.name and c.name != c.id:
         head += f": {c.name}"
     yield_bits = []
     if c.yield_percent is not None:

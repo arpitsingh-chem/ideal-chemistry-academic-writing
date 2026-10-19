@@ -16,6 +16,7 @@ from .chem import ORGANIC_ELEMENTS, dbe, dbe_applicable
 from .figures import caption_issues, check_figure_file, check_toc, image_info
 from .journals import JournalProfile, profile as journal_profile
 from .project import Compound, Project
+from .refs import RefCache
 from .util import read_text, sentences, similarity, visible_text, word_count
 
 CATEGORIES = ["structure", "abstract", "evidence", "references", "figures", "journal", "ethics", "style"]
@@ -137,6 +138,11 @@ def style_stats(text: str) -> dict:
     return {"sentences": len(sents), "mean_sentence_words": round(mean, 1),
             "long_sentence_share": round(long_share, 3), "passive_per_sentence": round(passive, 2),
             "top_trigram": top_repeat, "words": len(words)}
+
+
+def _num_token(value) -> str:
+    """Normalise 89.50 and 89.5 to the same token."""
+    return f"{float(value):.6f}".rstrip("0").rstrip(".")
 
 
 def find_numbers(text: str) -> list[str]:
@@ -361,6 +367,15 @@ def check_evidence(project: Project, profile: JournalProfile, rep: Report, prose
                 rep.add("EVI-SPECTRA-FILES", "warn", "evidence",
                         f"Compound {label}: spectra files not found: {missing}")
 
+    seen_ids: dict[str, int] = {}
+    for c in project.compounds:
+        seen_ids[c.id] = seen_ids.get(c.id, 0) + 1
+    for cid, n in seen_ids.items():
+        if n > 1:
+            rep.add("EVI-DUP-ID", "error", "evidence",
+                    f"Compound {cid} appears {n} times; the Experimental would print it {n} times.",
+                    "Merge the duplicate rows (or give them distinct ids) before drafting.")
+
     # Safety / stats / computational rigour
     if synthetic and not (project.back_matter or {}).get("safety"):
         rep.add("EVI-SAFETY", "warn", "ethics",
@@ -388,6 +403,7 @@ def check_evidence(project: Project, profile: JournalProfile, rep: Report, prose
 def check_references(project: Project, profile: JournalProfile, rep: Report,
                      ref_report=None, offline: bool = False) -> None:
     refs = project.references
+    cache = RefCache(project.root)
     keys = {r.key for r in refs if r.key}
     cited = project.citation_keys()
 
@@ -400,6 +416,16 @@ def check_references(project: Project, profile: JournalProfile, rep: Report,
         if keys and k not in keys:
             rep.add("REF-MISSING-KEY", "error", "references",
                     f"Citation key {k!r} used in text but not defined in references.", critical=True)
+    dois: dict[str, str] = {}
+    for r in refs:
+        doi = (r.doi or "").strip().lower()
+        if not doi:
+            continue
+        if doi in dois:
+            rep.add("REF-DUPLICATE-DOI", "warn", "references",
+                    f"{r.key or r.title} and {dois[doi]} are the same work (DOI {doi}) — keep one.")
+        else:
+            dois[doi] = r.key or r.title
     for r in refs:
         if r.key and r.key not in cited:
             rep.add("REF-UNUSED", "warn", "references", f"Reference {r.key!r} is never cited in the text.")
@@ -411,7 +437,9 @@ def check_references(project: Project, profile: JournalProfile, rep: Report,
             rep.add("REF-UNVERIFIED", sev, "references",
                     f"Reference {r.key or r.doi}: DOI has not been verified against Crossref.",
                     "Run `paperforge refs verify .` with network access.")
-        if r.retracted:
+        # a retraction verified earlier is in .paperforge/refcache.json; use it offline
+        cached = cache.get(r.doi) if r.doi else None
+        if r.retracted or (cached or {}).get("retracted"):
             rep.add("REF-RETRACTED", "error", "references",
                     f"Reference {r.key or r.doi} is retracted.", critical=True)
 
@@ -497,6 +525,12 @@ def check_figures(project: Project, profile: JournalProfile, rep: Report, prose:
         if f.source_data and not project.path(f.source_data).exists():
             rep.add("FIG-SOURCE-DATA", "warn", "figures",
                     f"{f.id}: source_data file not found ({f.source_data}).")
+
+    for t in project.tables:
+        if not project.path(str(t.file or "")).exists():
+            rep.add("TAB-MISSING", "error", "figures",
+                    f"Table {t.id}: data file not found ({t.file or 'none'}); it renders as an empty column.",
+                    "Point the table at its CSV/TSV or remove it.")
 
     n_display = len([f for f in figs if f.kind not in {"toc", "graphical"}]) + len(project.tables)
     if profile.limits.figures_max and n_display > profile.limits.figures_max:
@@ -648,6 +682,31 @@ def check_grounding(project: Project, rep: Report, prose: str, evidence_numbers:
                     f"{len(untraced)}/{len(body_nums)} numbers in the body are not in the data files "
                     f"(e.g. {untraced[:6]}). Verify they are literature values or add the source data.",
                     data={"numbers": untraced[:20]})
+    # A number that is *another* compound's own value is a misattribution, not prose.
+    # shortcut: only yields (%) and amounts (mmol); widen when a real case needs it.
+    owner: dict[tuple[str, str], set[str]] = {}
+    for c in project.compounds:
+        for field, unit in (("yield_percent", "%"), ("mmol", "mmol")):
+            v = getattr(c, field, None)
+            if isinstance(v, (int, float)):
+                owner.setdefault((_num_token(v), unit), set()).add(c.id)
+    ids = {c.id for c in project.compounds}
+    for sec in project.sections:
+        for p in _walk_paragraphs(sec):
+            # clauses too: "P2 gave 89.5%, and P1 gave 70.0%"
+            for sent in [c for s_ in sentences(p.text) for c in re.split(r",\s+and\s+|;\s+", s_)]:
+                named = {i for i in ids if re.search(r"(?<![\w-])" + re.escape(i) + r"(?![\w-])", sent)}
+                if len(named) != 1:
+                    continue
+                me = named.pop()
+                for num, unit in re.findall(r"(?<![\w-])(\d+(?:\.\d+)?)\s*(%|mmol)(?![\w-])", sent):
+                    who = owner.get((_num_token(num), unit), set()) - {me}
+                    if who and me not in owner.get((_num_token(num), unit), set()):
+                        rep.add("GRD-ATTRIB", "error", "evidence",
+                                f"“{num}{unit}” belongs to {', '.join(sorted(who))}, not {me}: {sent[:80]}…",
+                                "Fix the number or the compound id — reviewers check this against the SI.")
+                        break
+
     if re.search(r"\b(first|novel|unprecedented)\b", prose, re.I):
         # every novelty claim needs a citation in the same sentence
         for s in sentences(prose):

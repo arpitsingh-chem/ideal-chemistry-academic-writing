@@ -491,3 +491,60 @@ def test_looks_character_spaced():
     assert looks_character_spaced("T h e b e s t d o t")
     assert not looks_character_spaced("a e i o u are vowels, not a run")
     assert not looks_character_spaced("Normal prose with (I) and (II) ions.")
+
+
+# --- v2.3: the four silent failures found by the hard-case audit -------------
+
+def _mutated_demo(tmp_path, mutate) -> Project:
+    dst = tmp_path / "demo"
+    shutil.copytree(DEMO, dst)
+    data = __import__("yaml").safe_load((dst / "paper.yaml").read_text(encoding="utf-8"))
+    mutate(data)
+    (dst / "paper.yaml").write_text(__import__("yaml").safe_dump(data, allow_unicode=True), encoding="utf-8")
+    return Project.load(dst)
+
+
+def test_duplicate_compound_id_is_an_error(tmp_path):
+    def dup(d):
+        d["compounds"].append(dict(d["compounds"][0]))
+    rep = check_project(_mutated_demo(tmp_path, dup), offline=True)
+    assert "EVI-DUP-ID" in codes(rep)
+
+
+def test_missing_table_file_is_an_error(tmp_path):
+    def drop(d):
+        d.setdefault("tables", []).append({"id": "t99", "file": "data/absent.csv", "caption": "Gone."})
+    rep = check_project(_mutated_demo(tmp_path, drop), offline=True)
+    assert "TAB-MISSING" in codes(rep)
+
+
+def test_duplicate_doi_is_flagged(tmp_path):
+    def twice(d):
+        real = d["references"][0]
+        d["references"].append({**real, "key": real["key"] + "_again", "doi": real["doi"].upper()})
+    rep = check_project(_mutated_demo(tmp_path, twice), offline=True)
+    assert "REF-DUPLICATE-DOI" in codes(rep)
+
+
+def test_yield_attributed_to_the_wrong_compound_is_an_error(tmp_path):
+    """The paper is formally perfect but scientifically wrong — the hard case."""
+    def swap(d):
+        a, b = d["compounds"][0], d["compounds"][1]
+        d["sections"][-1]["paragraphs"].append(
+            {"text": f"Compound {a['id']} was obtained in {b['yield_percent']}% yield.", "cites": []})
+    rep = check_project(_mutated_demo(tmp_path, swap), offline=True)
+    assert "GRD-ATTRIB" in codes(rep)
+
+
+def test_offline_check_uses_the_cached_retraction(tmp_path):
+    """`refs verify` wrote the answer to disk; an offline check must not forget it."""
+    def plant(d):
+        d["references"][0].pop("retracted", None)
+    proj = _mutated_demo(tmp_path, plant)
+    doi = proj.references[0].doi
+    import json
+    cache = proj.root / ".paperforge"
+    cache.mkdir(parents=True, exist_ok=True)
+    (cache / "refcache.json").write_text(json.dumps({doi.lower(): {"retracted": True}}), encoding="utf-8")
+    rep = check_project(Project.load(proj.root), offline=True)
+    assert "REF-RETRACTED" in codes(rep)

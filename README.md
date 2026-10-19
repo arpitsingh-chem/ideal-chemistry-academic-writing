@@ -186,7 +186,15 @@ The v1 README quoted 1,707 publications / 257 journals and a top-10 that did not
 the committed data. Those numbers are corrected here; `data/publications-openalex.json`
 is the single source of truth and `paperforge journals list` reads from it.
 
-## 7. Verification
+## 7. Field test (does it work for a stranger?)
+
+`FIELD-TEST.md` records eight black-box tasks run against a fresh clone — cold start,
+ingesting an unseen lab folder, planted defects, journal retargeting, malformed input,
+determinism, retraction detection and PDF rendering. **Mean 9.1/10**, and the two failures
+it found (a letter-spaced abstract from a string-valued field, and a missed retraction) are
+fixed in v2.2 with regression tests.
+
+## 8. Verification
 
 ```bash
 python3 -m pytest tests/ -q            # 165 passed (+3 network)
@@ -199,7 +207,7 @@ The suite includes adversarial tests (50 kB random Unicode, 2,000-row tables, 16
 references, impossible formulae, negative yields, missing fields) and performance budgets
 (full check + compose + render < 3 s).
 
-## 8. Templates (now internally consistent)
+## 9. Templates (now internally consistent)
 
 The v1 LaTeX templates shipped a fabricated characterisation block: HRMS `256.0427` for
 C₁₄H₁₀NO₂S (true `[M+H]⁺` = 257.0505), `0.242 g` for 0.86 mmol at 82 % (true 0.181 g), and

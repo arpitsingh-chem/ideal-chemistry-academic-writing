@@ -192,3 +192,44 @@ def test_visible_text_keeps_heading_and_paragraph_text():
     assert "Data availability" in text
     assert "Scope of the reaction" in text
     assert "3a" in text
+
+
+# ---------------------------------------------------------------------------
+# Retraction detection (v2.2)
+# ---------------------------------------------------------------------------
+
+def test_is_retracted_reads_notice_and_relation():
+    from paperforge.refs import is_retracted
+
+    assert is_retracted({"type": "journal-article",
+                         "relation": {"is-retracted-by": [{"id": "x"}]}})
+    assert is_retracted({"type": "journal-article",
+                         "update-to": [{"type": "retraction", "DOI": "y"}]})
+    assert is_retracted({"type": "retraction"})
+    assert not is_retracted({"type": "journal-article", "relation": {}})
+
+
+def test_retraction_notice_offline_is_none():
+    from paperforge.refs import retraction_notice
+
+    assert retraction_notice("10.1021/ja054131h", offline=True) is None
+
+
+def test_retraction_notice_rejects_junk_doi():
+    from paperforge.refs import retraction_notice
+
+    assert retraction_notice("not-a-doi") is None
+    assert retraction_notice("") is None
+
+
+@pytest.mark.network
+def test_real_retraction_is_detected():
+    """10.1021/ja054131h is retracted by 10.1021/ja207910h (Crossref)."""
+    from paperforge.refs import fetch_crossref
+
+    rec = fetch_crossref("10.1021/ja054131h", offline=False).data
+    assert rec["retracted"] is True
+    assert rec.get("retraction_notice") == "10.1021/ja207910h"
+
+    clean = fetch_crossref("10.1021/acs.chemrev.6b00057", offline=False).data
+    assert clean["retracted"] is False

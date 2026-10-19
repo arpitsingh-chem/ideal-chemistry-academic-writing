@@ -155,6 +155,24 @@ def find_numbers(text: str) -> list[str]:
 # ---------------------------------------------------------------------------
 
 
+def looks_character_spaced(text: str, min_run: int = 8) -> bool:
+    """True when text contains a run of ≥min_run single characters separated by spaces.
+
+    Catches the class of bug where a string is iterated as a sequence
+    (``" ".join("word")``) anywhere upstream of rendering.
+    """
+    tokens = (text or "").split()
+    run = 0
+    for tok in tokens:
+        if len(tok) == 1:
+            run += 1
+            if run >= min_run:
+                return True
+        else:
+            run = 0
+    return False
+
+
 def check_structure(project: Project, profile: JournalProfile, rep: Report, abstract: str,
                     headings: list[str] | None = None) -> None:
     title = project.title.strip()
@@ -195,6 +213,11 @@ def check_structure(project: Project, profile: JournalProfile, rep: Report, abst
 
     # Abstract
     ab = (abstract or "").strip()
+    if ab and looks_character_spaced(ab):
+        rep.add("STR-ABSTRACT-SPACED", "error", "abstract",
+                "The abstract reads as single characters separated by spaces.",
+                "An abstract field was probably a string where a list of sentences "
+                "was expected; check paper.yaml.", critical=True)
     if not ab:
         rep.add("STR-ABSTRACT-MISSING", "error", "abstract",
                 "Abstract is missing — automatic return at ACS and a desk-reject risk everywhere.",
@@ -399,9 +422,19 @@ def check_references(project: Project, profile: JournalProfile, rep: Report,
         if ref_report.duplicates:
             rep.add("REF-DUPLICATE", "error", "references",
                     f"Duplicate DOI(s): {ref_report.duplicates}")
+        already = {i.message for i in rep.issues if i.code == "REF-RETRACTED"}
         for err in ref_report.errors:
-            if "RETRACTED" in err:
-                rep.add("REF-RETRACTED", "error", "references", err, critical=True)
+            if "RETRACTED" not in err:
+                continue
+            # the per-reference loop above already reported known retractions;
+            # only add what it could not know (e.g. retractions found during verify)
+            key = re.search(r"\(([^)]+)\)\s*$", err.strip())
+            doi = re.search(r"10\.\d{4,9}/\S+?(?=[\s,)]|$)", err)
+            subject = key.group(1) if key else (doi.group(0) if doi else "")
+            if subject and any(subject in m for m in already | {r.key or "" for r in refs}):
+                if any(subject in m for m in already):
+                    continue
+            rep.add("REF-RETRACTED", "error", "references", err, critical=True)
     if profile.limits.refs_max and len(refs) > profile.limits.refs_max:
         rep.add("JNL-REFS-MAX", "error", "journal",
                 f"{len(refs)} references exceed the {profile.limits.refs_max}-reference limit "
@@ -902,6 +935,11 @@ def check_file(path: str | Path, journal: str = "Organic Letters", article_type:
         hypes = [w for w in HYPE if re.search(rf"\b{re.escape(w)}\b", title, re.I)]
         if hypes:
             rep.add("STR-TITLE-HYPE", "warn", "structure", f"Title contains hype word(s): {hypes}.")
+    if abstract and looks_character_spaced(abstract):
+        rep.add("STR-ABSTRACT-SPACED", "error", "abstract",
+                "The abstract reads as single characters separated by spaces.",
+                "An abstract field was probably a string where a list of "
+                "sentences was expected; check paper.yaml.", critical=True)
     if not abstract:
         rep.add("STR-ABSTRACT-MISSING", "error", "abstract",
                 "No abstract found (checked \\begin{abstract}, ## Abstract and 'Abstract:').", critical=True)

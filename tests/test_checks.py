@@ -459,3 +459,35 @@ def test_dataset_summaries_vary_phrasing(tmp_path):
     out = dataset_summaries(project, ds)
     assert out
     assert not all(s.startswith("ranged") for s in out)
+
+
+# ---------------------------------------------------------------------------
+# v2.2: string-valued abstract moves must not be iterated as characters
+# ---------------------------------------------------------------------------
+
+def test_string_results_move_is_not_split_into_characters(tmp_path):
+    def stringify(d):
+        d["abstract"]["results"] = "The best formulation gives 94% yield in 12 minutes."
+
+    project = _clone(tmp_path, stringify)
+    text = project.abstract_text()
+    assert "The best formulation gives 94% yield" in text
+    assert "T h e" not in text
+
+
+def test_character_spaced_abstract_is_a_critical_error(tmp_path):
+    def corrupt(d):
+        d["abstract"]["results"] = list("The best formulation gives 94% yield")
+
+    rep = check_project(_clone(tmp_path, corrupt), offline=True)
+    codes = {i.code for i in rep.issues}
+    assert "STR-ABSTRACT-SPACED" in codes
+    assert score(rep)["score"] <= 55
+
+
+def test_looks_character_spaced():
+    from paperforge.checks import looks_character_spaced
+
+    assert looks_character_spaced("T h e b e s t d o t")
+    assert not looks_character_spaced("a e i o u are vowels, not a run")
+    assert not looks_character_spaced("Normal prose with (I) and (II) ions.")

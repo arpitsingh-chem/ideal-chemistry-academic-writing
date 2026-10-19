@@ -160,8 +160,10 @@ missing, rather than an empty folder.
 * Crossref lookups with `mailto` politeness, on-disk cache keyed by DOI;
 * **rejects** supplement DOIs (`…​.s001`), prefers `query.title` + `query.author` with
   `filter=type:journal-article`;
-* retraction detection via the `relation` graph (`is-retracted-by`), surfaced as
-  `REF-RETRACTED` (critical);
+* retraction detection **both ways**: the `relation` graph (`is-retracted-by`) and, because
+  Crossref does not reliably back-link a retracted paper to its notice, a forward query
+  `filter=updates:<doi>,update-type:retraction` (`retraction_notice()`). Verified on
+  10.1021/ja054131h → notice 10.1021/ja207910h; surfaced as `REF-RETRACTED` (critical);
 * BibTeX writer that is **pure ASCII**: HTML stripped from titles, typographic dashes and
   hyphens folded, titles wrapped in `{{…}}` to survive case-changing styles, because
   T1-encoded fonts cannot render U+2010/U+2013 (the v1 template's failure mode);

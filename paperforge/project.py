@@ -355,13 +355,31 @@ class Project:
         return out
 
     def abstract_text(self) -> str:
+        """Join the abstract moves in order, tolerating str *or* list values.
+
+        `results` is documented as a list of sentences, but writing a single
+        string is the natural thing to do in YAML -- and `list("The best…")`
+        is a list of characters.  That silently produced letter-spaced text
+        ("T h e  b e s t") which no rule caught, because the abstract was
+        still non-empty and still contained digits.  Coerce explicitly.
+        """
         if not self.abstract:
             return ""
         if isinstance(self.abstract, str):
             return self.abstract
-        parts = [self.abstract.get("context", ""), self.abstract.get("gap", "")]
-        parts += list(self.abstract.get("results") or [])
-        parts.append(self.abstract.get("impact", ""))
+        if not isinstance(self.abstract, dict):
+            return str(self.abstract)
+        parts: list[str] = []
+        for move in ("context", "gap", "results", "impact"):
+            value = self.abstract.get(move)
+            if not value:
+                continue
+            if isinstance(value, str):
+                parts.append(value)
+            elif isinstance(value, (list, tuple)):
+                parts.extend(str(v) for v in value)
+            else:
+                parts.append(str(value))
         return " ".join(p.strip() for p in parts if p and p.strip())
 
     def citation_keys(self) -> list[str]:

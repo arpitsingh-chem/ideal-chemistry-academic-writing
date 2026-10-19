@@ -106,6 +106,14 @@ def fetch_crossref(doi: str, mailto: str = DEFAULT_MAILTO, cache: RefCache | Non
         "cited_by": msg.get("is-referenced-by-count", 0),
         "source": "crossref",
     }
+    if not rec["retracted"] and not offline:
+        # Crossref does not reliably back-link a retracted paper to its notice,
+        # so ask for the notice explicitly.  Costs one request per reference and
+        # runs only when the manuscript asked for network verification.
+        notice = retraction_notice(rec["doi"])
+        if notice:
+            rec["retracted"] = True
+            rec["retraction_notice"] = notice.get("DOI", "")
     if cache:
         cache.put(doi, rec)
     return FetchResult(True, "ok", rec)
@@ -120,16 +128,45 @@ def _year(msg: dict) -> int | None:
 
 
 def is_retracted(msg: dict) -> bool:
+    """True when this record is a retraction notice *or* has been retracted.
+
+    Crossref is inconsistent about the reverse link: a retraction notice carries
+    ``update-to`` pointing at the original paper, but the original frequently has
+    an **empty** ``relation`` map, so trusting relations alone misses real cases
+    (verified on 10.1021/ja054131h, retracted by 10.1021/ja207910h).  Use
+    :func:`retraction_notice` for the authoritative forward lookup.
+    """
     rel = msg.get("relation") or {}
-    if "is-retracted-by" in rel:
+    if any(k in rel for k in ("is-retracted-by", "is-retraction-of")):
         return True
     for u in msg.get("update-to") or []:
         if u.get("type") == "retraction":
-            # this record is the retraction notice, not necessarily retracted itself
             return True
     if str(msg.get("type", "")).lower() in {"retraction"}:
         return True
     return False
+
+
+def retraction_notice(doi: str, offline: bool = False) -> dict | None:
+    """Ask Crossref *backwards*: is there a retraction notice that updates this DOI?
+
+    ``filter=updates:<doi>`` returns records that update the given work, which is
+    how Crossref reliably records retractions.  Returns the notice record (with
+    its DOI) or None.  Errors are swallowed: a failed lookup must never make a
+    manuscript look retracted.
+    """
+    doi = normalize_doi(doi)
+    if not doi or not valid_doi_syntax(doi):
+        return None
+    if offline:
+        return None
+    url = (f"https://api.crossref.org/works?filter=updates:{doi},update-type:retraction"
+           f"&rows=1&select=DOI,title,update-to,type&mailto={DEFAULT_MAILTO}")
+    result = _http_json(url, DEFAULT_MAILTO)
+    if not result.ok:
+        return None
+    items = ((result.data or {}).get("message") or {}).get("items") or []
+    return items[0] if items else None
 
 
 def normalize_doi(doi: str) -> str:

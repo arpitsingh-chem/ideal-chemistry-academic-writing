@@ -1,11 +1,11 @@
 # PaperForge — an ideal chemistry academic-writing engine
 
-[![tests](https://img.shields.io/badge/tests-157%20passing-brightgreen)](#verification)
-[![rules](https://img.shields.io/badge/rules-90-blue)](#the-rule-set)
+[![tests](https://img.shields.io/badge/tests-165%20passing-brightgreen)](#verification)
+[![rules](https://img.shields.io/badge/rules-91-blue)](#the-rule-set)
 [![version](https://img.shields.io/badge/version-2.0.0-informational)](#)
 
 **Turn a folder of CSV tables, figures, spectra metadata and DOIs into a submission-ready
-chemistry manuscript — checked against 87 machine-readable rules, 261 journal profiles and
+chemistry manuscript — checked against 91 machine-readable rules, 261 journal profiles and
 the chemistry itself.**
 
 > v1 of this repository was a *documentation and template* collection: excellent prose, but
@@ -125,7 +125,7 @@ Text linters cannot tell you that your mass is wrong. PaperForge parses the chem
 | structure | 15 % | title length, abstract presence/split, section grammar, heading order |
 | abstract | 10 % | word limit for the *resolved* article type, the five moves (context/gap/approach/result/impact) |
 | evidence | 20 % | formula↔HRMS, yield↔mass, NMR H-count, CCDC, purity claims |
-| references | 15 % | missing keys, unresolvable DOIs, retractions, duplicates, style |
+| references | 15 % | missing keys, unresolvable DOIs, **retractions (forward lookup at Crossref)**, duplicates, style |
 | figures | 10 % | dpi < 300, physical width vs journal column width, TOC aspect |
 | journal | 15 % | abstract/body word caps, page caps, required statements per publisher |
 | ethics | 10 % | CRediT, COI, funding, data availability, AI disclosure, safety |
@@ -189,7 +189,7 @@ is the single source of truth and `paperforge journals list` reads from it.
 ## 7. Verification
 
 ```bash
-python3 -m pytest tests/ -q            # 157 passed
+python3 -m pytest tests/ -q            # 165 passed (+3 network)
 python3 -m paperforge check examples/demo-paper          # 100.0 / 100
 python3 -m paperforge refs verify examples/demo-paper    # 8/8 verified
 cd examples/demo-paper/build && tectonic -X compile manuscript.tex   # 8 pages

@@ -2,7 +2,8 @@ name: manuscript-lint
 
 on:
   push:
-    paths: ['paperforge/**', 'data/**', 'templates/**', 'examples/**', 'tests/**', '**.tex']
+    paths: ['paperforge/**', 'data/**', 'templates/**', 'examples/**', 'tests/**',
+            'scripts/**', '**.tex', '.github/workflows/**']
   pull_request:
   workflow_dispatch:
 

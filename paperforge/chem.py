@@ -68,10 +68,49 @@ AVG: dict[str, float] = {
     "U": 238.03,
 }
 
+#: Elements missing from the tables above (added in v2.4 after an audit found
+#: that ``Nb2O3`` and ``PmCl3`` raised "unknown element" for valid formulae).
+#: Values are CODATA/IUPAC: monoisotopic mass of the most abundant isotope, and
+#: the standard atomic weight (or the mass number in brackets for elements with
+#: no stable isotope, following IUPAC convention).
+_MONO_EXTRA = {
+    "Be": 9.012183065, "Ne": 19.9924401762, "Nb": 92.9063730, "Tc": 97.9072124,
+    "Pm": 144.9127559, "Po": 208.9824304, "At": 209.9871479, "Rn": 222.0175777,
+    "Ra": 226.0254098, "Ac": 227.0277521, "Pa": 231.0358840, "Np": 237.0481734,
+    "Pu": 244.0642044, "Am": 243.0613811, "Cm": 247.0703541, "Bk": 247.0703073,
+}
+_AVG_EXTRA = {
+    "Be": 9.0122, "Ne": 20.180, "Nb": 92.906, "Tc": 98.0, "Pm": 145.0,
+    "Po": 209.0, "At": 210.0, "Rn": 222.0, "Ra": 226.0, "Ac": 227.0,
+    "Pa": 231.04, "Np": 237.0, "Pu": 244.0, "Am": 243.0, "Cm": 247.0, "Bk": 247.0,
+}
+MONO.update(_MONO_EXTRA)
+AVG.update(_AVG_EXTRA)
+
+#: Standard valences used by the degree-of-unsaturation expression.
+#: Only elements with a single dominant valence are listed; anything absent is
+#: treated as *variable* and disables the hard DBE error (see :func:`dbe_check`).
+VALENCE: dict[str, int] = {
+    "H": 1, "D": 1, "T": 1, "B": 3, "C": 4, "N": 3, "O": 2, "F": 1,
+    "Si": 4, "P": 3, "S": 2, "Cl": 1, "Ge": 4, "As": 3, "Se": 2, "Br": 1,
+    "Sn": 4, "Te": 2, "I": 1,
+}
+
+#: Elements whose valence genuinely varies in ordinary chemistry. A DBE derived
+#: from them is advisory only: e.g. boron is 3-coordinate in boronic acids and
+#: 4-coordinate in tetraarylborates, so one formula can be internally consistent
+#: under either reading.
+VARIABLE_VALENCE = {"B", "Si", "P", "S", "Se", "Te", "Ge", "Sn", "As"}
+
 ELECTRON = 0.00054857990946
 PROTON = 1.007276466621  # mass of H+ (proton, no electron)
 
 #: common adducts: (mass shift for the ion, absolute charge)
+#:
+#: The shift of a radical ion is NOT zero: ``[M]⁺·`` is the molecule minus one
+#: electron (0.00055 Da), which is 2.1 ppm at m/z 257 — enough to fail a 2 ppm
+#: HRMS window on its own. v2.4 fixed this; v2.3 reported ``[M]⁺`` as the
+#: neutral mass.
 ADDUCTS: dict[str, tuple[float, int]] = {
     "[M+H]+": (PROTON, 1),
     "[M+Na]+": (MONO["Na"] - ELECTRON, 1),
@@ -87,9 +126,9 @@ ADDUCTS: dict[str, tuple[float, int]] = {
     "[M+2H]2+": (2 * PROTON, 2),
     "[M+2Na]2+": (2 * (MONO["Na"] - ELECTRON), 2),
     "[M+3H]3+": (3 * PROTON, 3),
-    "[M]+": (0.0, 1),
-    "[M]+.": (0.0, 1),
-    "[M]-": (0.0, 1),
+    "[M]+": (-ELECTRON, 1),        # radical cation: M − e⁻
+    "[M]+.": (-ELECTRON, 1),
+    "[M]-": (ELECTRON, 1),         # radical anion:  M + e⁻
 }
 
 
@@ -101,36 +140,106 @@ class FormulaError(ValueError):
 # Formula parsing
 # ---------------------------------------------------------------------------
 
-_TOKEN = re.compile(r"([A-Z][a-z]?)(\d*)|(\()|(\))(\d*)|([·.*])(\d*)")
+#: A charge suffix: optional magnitude digits, one or more signs, an optional
+#: radical dot. Unicode superscripts and minus signs are normalised first.
+_CHARGE_RE = re.compile(r"(\d*)([+\-]+)[•.·]?$")
 
 
-def parse_formula(formula: str) -> dict[str, int]:
-    """Parse a molecular formula into ``{element: count}``.
+def split_charge(formula: str) -> tuple[str, int]:
+    """Separate a trailing charge from the formula body.
 
-    Supports hydrated salts (``CuSO4·5H2O``), dot/asterisk adducts
-    (``C6H5NO2*HCl``), nested brackets (``C6H4(NO2)2``) and charge suffixes
-    (``+``/``-``), which are ignored for mass purposes.
+    Returns ``(body, charge)`` where ``charge`` is signed (``+2``, ``-1``, ``0``).
 
-    >>> parse_formula("C14H10NO2S")["C"]
-    14
-    >>> parse_formula("CuSO4·5H2O")["O"]
-    9
+    The subtlety that broke v2.3: in ``C7H7+`` the trailing ``+`` is the charge
+    and the ``7`` is a hydrogen subscript, but a naive ``(\\^?\\d*[+-]+)$`` strip
+    removes ``7+`` and silently turns tropylium into ``CH``. A charge magnitude is
+    therefore read only when it is written unambiguously — after a closing
+    bracket (``[Fe(CN)6]3-``) or after whitespace (``SO4 2-``). Digits attached
+    directly to a letter stay where they were written: they are subscripts.
+
+    The one genuinely ambiguous spelling, an attached magnitude such as
+    ``SO42-``, is *not* guessed at; :func:`charge_ambiguous` reports it so the
+    checker can ask the author to write ``SO4^2-`` instead of silently baking a
+    wrong mass into the manuscript.
     """
-    if not formula or not formula.strip():
-        raise FormulaError("empty formula")
-    s = formula.strip().replace(" ", "")
-    s = re.sub(r"(\^?\d*[+-]+)$", "", s)          # strip charge
-    s = s.replace("·", ".").replace("⋅", ".")
+    s = (formula or "").strip()
+    s = (s.replace("⁺", "+").replace("⁻", "-").replace("−", "-")
+          .replace("–", "-").replace("＋", "+"))
+    m = _CHARGE_RE.search(s)
+    if not m:
+        return s.strip(), 0
+    digits, signs = m.group(1), m.group(2)
+    before_raw = s[: m.start()]
+    before = before_raw.rstrip()
+    magnitude = int(digits) if digits else len(signs)
+    positive = signs.count("+") >= signs.count("-")
+    charge = magnitude if positive else -magnitude
+
+    if digits:
+        anchored = before.endswith("]") or before.endswith(")") or before_raw != before
+        if not anchored:
+            # digits belong to the preceding atom group (C7H7+): keep them in the
+            # body and read only the sign as the charge.
+            body = before_raw + digits
+            sign = len(signs) if positive else -len(signs)
+            return body.strip(), sign
+    return before, charge
+
+
+def charge_ambiguous(formula: str) -> bool:
+    """True when an attached charge magnitude was probably written as a subscript.
+
+    ``SO42-`` is the canonical victim: read literally it means S O42 (molar mass
+    688 g/mol) when the author meant SO4^2-. Detection is deliberately narrow —
+    the flag fires only when the literal reading produces an element count that
+    no molecular formula reaches (> 30 of one element, excluding polymers), so
+    ``NH4+`` and ``C7H7+`` are not flagged.
+    """
+    s = (formula or "").strip().replace("⁺", "+").replace("⁻", "-").replace("−", "-")
+    m = _CHARGE_RE.search(s)
+    if not m or not m.group(1):
+        return False
+    before_raw = s[: m.start()]
+    before = before_raw.rstrip()
+    if before.endswith("]") or before.endswith(")") or before_raw != before:
+        return False
+    if not re.search(r"[A-Za-z]$", before):
+        return False
+    try:
+        counts = parse_formula(formula)
+    except FormulaError:
+        return False
+    # Ignore carbon skeletons (C60, C70, nanotubes) — the ambiguity that matters
+    # is a small inorganic formula whose counts explode.
+    return any(n > 30 for el, n in counts.items() if el != "C")
+
+
+def _split_segments(s: str) -> list[str]:
+    """Split a formula on top-level ``.``/``*`` (hydrate/adduct separators)."""
+    segments, depth, current = [], 0, []
+    for ch in s:
+        if ch in "([":
+            depth += 1
+        elif ch in ")]":
+            depth = max(0, depth - 1)
+        if ch in ".*·⋅" and depth == 0:
+            segments.append("".join(current))
+            current = []
+            continue
+        current.append(ch)
+    segments.append("".join(current))
+    return [seg for seg in (x.strip() for x in segments) if seg]
+
+
+def _parse_body(s: str, formula: str) -> dict[str, int]:
+    """Parse one bracket-balanced, dot-free stoichiometric block."""
     counts: dict[str, int] = {}
     stack: list[dict[str, int]] = [counts]
     i = 0
-    last_element: str | None = None
-
     while i < len(s):
         ch = s[i]
         if ch in "([":
             stack.append({})
-            last_element = None
             i += 1
         elif ch in ")]":
             if len(stack) == 1:
@@ -144,23 +253,6 @@ def parse_formula(formula: str) -> dict[str, int]:
             mult = int(num) if num else 1
             for el, n in group.items():
                 stack[-1][el] = stack[-1].get(el, 0) + n * mult
-            last_element = None
-        elif ch in ".*":
-            i += 1
-            num = ""
-            while i < len(s) and s[i].isdigit():
-                num += s[i]
-                i += 1
-            # hydrate multiplier applies to the following stoichiometric block
-            mult = int(num) if num else 1
-            if mult > 1:
-                # capture the rest of the string as a block and scale it
-                rest = s[i:]
-                sub = parse_formula(rest)
-                for el, n in sub.items():
-                    stack[-1][el] = stack[-1].get(el, 0) + n * mult
-                return stack[0]
-            last_element = None
         elif ch.isupper():
             m = re.match(r"([A-Z][a-z]?)(\d*)", s[i:])
             if not m:
@@ -170,13 +262,57 @@ def parse_formula(formula: str) -> dict[str, int]:
                 raise FormulaError(f"unknown element {el!r} in {formula!r}")
             n = int(num) if num else 1
             stack[-1][el] = stack[-1].get(el, 0) + n
-            last_element = el
             i += len(m.group(0))
+        elif ch.isdigit():
+            raise FormulaError(f"stray digit {ch!r} at {s[i:]!r} in {formula!r}")
         else:
             raise FormulaError(f"unexpected character {ch!r} in {formula!r}")
     if len(stack) != 1:
         raise FormulaError(f"unbalanced bracket in {formula!r}")
-    return {k: v for k, v in counts.items() if v}
+    return counts
+
+
+def parse_formula(formula: str) -> dict[str, int]:
+    """Parse a molecular formula into ``{element: count}``.
+
+    Supports hydrated salts (``CuSO4·5H2O``), multiple hydrates
+    (``CuSO4·5H2O·2H2O``), dot/asterisk adducts (``C6H5NO2*HCl``), nested
+    brackets (``C6H4(NO2)2``) and charge suffixes (``C7H7+``, ``[Fe(CN)6]3-``),
+    which are ignored for mass purposes.
+
+    >>> parse_formula("C14H10NO2S")["C"]
+    14
+    >>> parse_formula("CuSO4·5H2O")["O"]
+    9
+    >>> parse_formula("CuSO4·5H2O·2H2O")["H"]
+    14
+    >>> parse_formula("C7H7+")["H"]
+    7
+    """
+    if not formula or not formula.strip():
+        raise FormulaError("empty formula")
+    body, _charge = split_charge(formula)
+    s = body.replace(" ", "")
+    if not s:
+        raise FormulaError(f"no formula body in {formula!r}")
+
+    total: dict[str, int] = {}
+    for index, segment in enumerate(_split_segments(s)):
+        coeff = 1
+        m = re.match(r"^(\d+)(.*)$", segment)
+        if m and m.group(2):
+            if index == 0:
+                # "6C" is a typo, not a hydrate coefficient: only the segments
+                # after a separator may carry a stoichiometric multiplier.
+                raise FormulaError(
+                    f"formula cannot start with a coefficient ({segment!r}) in {formula!r}")
+            coeff, segment = int(m.group(1)), m.group(2)
+        elif m and not m.group(2):
+            raise FormulaError(f"coefficient without a formula in {formula!r}")
+        block = _parse_body(segment, formula)
+        for el, n in block.items():
+            total[el] = total.get(el, 0) + n * coeff
+    return {k: v for k, v in total.items() if v}
 
 
 def format_formula(counts: dict[str, int]) -> str:
@@ -208,21 +344,25 @@ def nominal_mass(formula: str) -> int:
     return int(round(monoisotopic_mass(formula)))
 
 
-#: elements for which the organic DBE expression is meaningful
-ORGANIC_ELEMENTS = {"C", "H", "D", "T", "N", "O", "S", "F", "Cl", "Br", "I",
-                    "P", "B", "Si", "Se", "Te"}
+#: Elements for which the generalised DBE expression has a fixed valence, i.e.
+#: where a non-integer result is a genuine chemical impossibility.
+DBE_CERTAIN = {"C", "H", "D", "T", "N", "O", "F", "Cl", "Br", "I"}
+
+#: Kept for backwards compatibility with v2.3 callers.
+ORGANIC_ELEMENTS = set(VALENCE)
 
 
 def dbe_applicable(formula: str) -> bool:
-    """False for organometallic / main-group formulae where DBE is undefined.
+    """False when the formula contains an element with no single valence.
 
-    The organic expression assumes trivalent N, divalent O/S and monovalent
-    halogens.  A transition metal or an alkali/alkaline-earth counter-ion
-    breaks every one of those assumptions, so a half-integer DBE is not a
-    defect — the formula is simply outside the model.
+    v2.3 excluded only "foreign" (metal) elements, so organosilicon and
+    organophosphorus compounds — TMSCl, PPh3, boronic acids — were pushed
+    through an expression that assumes every non-carbon is N, O, S or halogen.
+    The result was a hard ``CHEM-DBE-NEG`` error on correct chemistry. v2.4 uses
+    real valences for all main-group elements and reports ``variable`` instead.
     """
     try:
-        return set(parse_formula(formula)) <= ORGANIC_ELEMENTS
+        return set(parse_formula(formula)) <= set(VALENCE)
     except FormulaError:
         return False
 
@@ -230,16 +370,42 @@ def dbe_applicable(formula: str) -> bool:
 def dbe(formula: str) -> float:
     """Degree of unsaturation (rings + double bonds).
 
-    DBE = C - H/2 + N/2 + 1 - X/2  (O and S are ignored; D counts as H).
-    A neutral, closed-shell molecule must have a non-negative **integer** DBE;
-    a half-integer value means the formula describes a radical ion.
+    Generalised form, valid for any main-group element with a single valence::
+
+        DBE = 1 + ½ Σ nᵢ (vᵢ − 2) − ½ q
+
+    where ``vᵢ`` is the valence of element *i* and ``q`` the net charge. This
+    reduces to the familiar ``C − H/2 + N/2 + 1 − X/2`` for C/H/N/O/halogen
+    compounds, and additionally handles Si (valence 4, like C), P and B
+    (valence 3, like N) and Se/Te (valence 2, like S).
+
+    >>> dbe("C6H6")
+    4.0
+    >>> dbe("C18H15P")          # triphenylphosphine
+    12.0
+    >>> dbe("C3H9SiCl")         # chlorotrimethylsilane
+    0.0
+    >>> dbe("C7H7+")            # tropylium cation
+    4.0
     """
-    c = parse_formula(formula)
-    c_val = c.get("C", 0)
-    h = c.get("H", 0) + c.get("D", 0) + c.get("T", 0)
-    n = c.get("N", 0)
-    x = c.get("F", 0) + c.get("Cl", 0) + c.get("Br", 0) + c.get("I", 0)
-    return c_val - h / 2 + n / 2 + 1 - x / 2
+    counts = parse_formula(formula)
+    _body, charge = split_charge(formula)
+    total = 0.0
+    for el, n in counts.items():
+        valence = VALENCE.get(el)
+        if valence is None:
+            raise FormulaError(
+                f"DBE is not defined for {el!r} in {formula!r}: no single valence")
+        total += n * (valence - 2)
+    return round(1.0 + total / 2.0 - charge / 2.0, 6)
+
+
+def dbe_variable_valence(formula: str) -> list[str]:
+    """Elements in the formula whose valence makes a DBE result advisory only."""
+    try:
+        return sorted(set(parse_formula(formula)) & VARIABLE_VALENCE)
+    except FormulaError:
+        return []
 
 
 #: aliases seen in the wild (ChemDraw, MassLynx, authors' shorthand)
@@ -298,7 +464,17 @@ class Issue:
 
 
 def check_formula(formula: str) -> list[Issue]:
-    """Valence/DBE sanity of a neutral formula."""
+    """Valence/DBE sanity of a formula.
+
+    Severity policy (v2.4) — the tool must not cry wolf on valid chemistry:
+
+    * non-integer or negative DBE is an **error** only when every element has a
+      single unambiguous valence;
+    * the same finding is **info** when the formula contains an element of
+      variable valence (B, Si, P, S, Se, Te, Ge, Sn, As) or a net charge,
+      because the expression is then advisory by construction;
+    * a metal-containing formula skips DBE entirely and reports a note.
+    """
     issues: list[Issue] = []
     try:
         counts = parse_formula(formula)
@@ -307,9 +483,16 @@ def check_formula(formula: str) -> list[Issue]:
     if not counts:
         return [Issue("error", "CHEM-FORMULA", f"Empty molecular formula {formula!r}")]
 
+    if charge_ambiguous(formula):
+        issues.append(Issue(
+            "warn", "CHEM-CHARGE-SYNTAX",
+            f"{formula!r}: an attached charge magnitude is ambiguous — read literally it "
+            f"means {format_formula(counts)}. Write the charge space-separated (SO4 2-) or "
+            "with an explicit exponent (SO4^2-).",
+            "A compressed charge silently changes the molar mass."))
+
     if not dbe_applicable(formula):
-        # organometallic / salt: the organic DBE model does not apply
-        foreign = sorted(set(counts) - ORGANIC_ELEMENTS)
+        foreign = sorted(set(counts) - set(VALENCE))
         issues.append(Issue(
             "info", "CHEM-DBE-METAL",
             f"{formula}: DBE is not defined for formulae containing "
@@ -317,39 +500,45 @@ def check_formula(formula: str) -> list[Issue]:
             "State the ligand count and metal oxidation state in the text."))
         return issues
 
-    d = dbe(formula)
-    if d < 0:
-        issues.append(
-            Issue(
-                "error",
-                "CHEM-DBE-NEG",
-                f"{formula}: DBE = {d:.1f} is negative — more H than valence allows.",
-                "Re-count hydrogens (account for charges and salts).",
-            )
-        )
-    elif abs(d - round(d)) > 1e-9:
-        issues.append(
-            Issue(
-                "error",
-                "CHEM-DBE-FRACTION",
-                f"{formula}: DBE = {d:.1f} is not an integer — a neutral closed-shell "
-                "molecule cannot have this formula (radical/ion, or an H count is wrong).",
-                "Check the hydrogen count and charge state.",
-            )
-        )
+    _body, charge = split_charge(formula)
+    variable = dbe_variable_valence(formula)
+    try:
+        d = dbe(formula)
+    except FormulaError:
+        return issues
 
-    # nitrogen rule for C,H,N,O,S,halogen-only compounds
-    if set(counts) <= {"C", "H", "N", "O", "S", "F", "Cl", "Br", "I"}:
+    # An ion's DBE legitimately differs from its neutral parent by q/2, so a
+    # charge alone is never treated as an error signal.
+    hard = not variable and not charge
+    if d < 0:
+        issues.append(Issue(
+            "error" if hard else "info",
+            "CHEM-DBE-NEG",
+            f"{formula}: DBE = {d:.1f} is negative — more H than the valences allow"
+            + (f" (variable valence: {', '.join(variable)})" if variable else "")
+            + (f" (charge {charge:+d})" if charge else "") + ".",
+            "Re-count hydrogens (account for charges and salts)."))
+    elif abs(d - round(d)) > 1e-9:
+        issues.append(Issue(
+            "error" if hard else "info",
+            "CHEM-DBE-FRACTION",
+            f"{formula}: DBE = {d:.1f} is not an integer"
+            + (f" (variable valence: {', '.join(variable)})" if variable else "")
+            + (f" (charge {charge:+d})" if charge else "")
+            + " — check the hydrogen count and charge state.",
+            "A neutral closed-shell molecule of fixed-valence elements cannot have this formula."))
+
+    # nitrogen rule for C,H,N,O,S,halogen-only *neutral* compounds (an ion's
+    # parity is shifted by its charge, so the rule does not apply)
+    if not charge and set(counts) <= {"C", "H", "N", "O", "S", "F", "Cl", "Br", "I"}:
         nm = nominal_mass(formula)
         nparity = counts.get("N", 0) % 2
         if nparity == 0 and nm % 2 != 0:
             issues.append(
-                Issue("warn", "CHEM-NRULE", f"{formula}: nominal mass {nm} is odd but N count is even (nitrogen rule).")
-            )
+                Issue("warn", "CHEM-NRULE", f"{formula}: nominal mass {nm} is odd but N count is even (nitrogen rule)."))
         if nparity == 1 and nm % 2 == 0:
             issues.append(
-                Issue("warn", "CHEM-NRULE", f"{formula}: nominal mass {nm} is even but N count is odd (nitrogen rule).")
-            )
+                Issue("warn", "CHEM-NRULE", f"{formula}: nominal mass {nm} is even but N count is odd (nitrogen rule)."))
     return issues
 
 
@@ -446,17 +635,31 @@ def parse_integrals(nmr_text: str) -> tuple[int, list[str]]:
 
     Understands ``δ 8.21 (d, J = 8.8 Hz, 2H)``, ``3H, OCH3``, ``1 H`` and
     ``0.9 (t, 6H)``-style reporting.  Returns ``(total_H, warnings)``.
+
+    Two false-positive classes are removed before summation, both found by
+    audit fixtures in v2.4:
+
+    * the *experiment label* — ``1H NMR``, ``13C NMR``, ``1H-1H COSY`` — which is
+      not an integral (v2.3 added 1 H for every such string);
+    * a molecular formula written into the same field (``C14H10NO2S``), whose
+      subscripts are not integrals.
     """
     warnings: list[str] = []
+    text = nmr_text or ""
+
+    # 1. drop the experiment label: "1H NMR", "13C NMR", "1H-1H COSY", "19F NMR"
+    text = re.sub(r"\b\d{1,2}\s*H\s*(?:[\u2013\u2014-]\s*\d{1,2}\s*H\s*)?"
+                  r"(?:NMR|COSY|NOESY|ROESY|HSQC|HMBC|TOCSY)\b", " ", text, flags=re.I)
+    # 2. drop molecular formulae such as C14H10NO2S (two or more element symbols)
+    text = re.sub(r"\b(?:[A-Z][a-z]?\d*){3,}\b", " ", text)
+
     total = 0
-    # integrals such as "2H", "3 H", "1H" immediately after a comma or parenthesis
-    for m in re.finditer(r"(?<![\d.])(\d{1,2})\s*H\b", nmr_text):
+    for m in re.finditer(r"(?<![\d.])(\d{1,2})\s*H\b", text):
         total += int(m.group(1))
     if total == 0:
-        # fall back: numbers inside parentheses whose unit is H
-        for m in re.finditer(r"\((\d{1,2})\s*H", nmr_text):
+        for m in re.finditer(r"\((\d{1,2})\s*H", text):
             total += int(m.group(1))
-    if re.search(r"\b(exchange|D2O|br s,?\s*\d*H?)", nmr_text, re.I) and total == 0:
+    if total == 0 and re.search(r"\b(exchange|D2O|br s)", text, re.I):
         warnings.append("integrals not parseable")
     return total, warnings
 

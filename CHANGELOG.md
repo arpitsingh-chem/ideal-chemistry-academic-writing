@@ -93,7 +93,7 @@ packaging and CI. Backward compatible: every v2.3 command, API and file format s
   5/261 have per-journal verification. Claim corrected; data unchanged.
 * "Faculty analysed 30" — the snapshot contains 26.
 * "252 journals" — 254 venue strings (251 after the documented exclusions).
-* "136 tests" — 173 at audit time, 349 now.
+* "136 tests" — 173 at audit time, 360 now.
 * "code MIT" — no MIT licence exists; claim removed (open owner decision, D-1).
 * `CITATION.cff` version 2.1.0 while the package was 2.3.0.
 * Static shields.io badges presented as CI/test status; replaced with a real workflow badge.
@@ -140,7 +140,7 @@ packaging and CI. Backward compatible: every v2.3 command, API and file format s
 ## Verifying a release
 
 ```bash
-python3 -m pytest                       # expect: 349 passed, 3 skipped
+python3 -m pytest                       # expect: 360 passed, 3 skipped
 python3 -m paperforge check examples/demo-paper          # expect: 100.0/100
 python3 -m paperforge research providers                 # expect: 11 adapters, 7 blocked
 python3 -m build && pip install dist/paperforge-2.4.0-py3-none-any.whl

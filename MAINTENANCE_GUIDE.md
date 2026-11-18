@@ -161,7 +161,7 @@ Release checklist:
 | `coverage` records merged | non-zero on overlapping queries | 0 on a duplicate-heavy query |
 | test suite runtime | < 30 s | > 2 min (a fixture or a test is doing network I/O) |
 | wheel size | ~0.9 MB (data dominates) | > 2 MB (someone added a dataset) |
-| demo score | 100.0 / 99.7 | any drop |
+| demo score | 100.0 · 99.7 (`--verify-refs`) · 94.9 (offline) | any drop |
 
 ---
 

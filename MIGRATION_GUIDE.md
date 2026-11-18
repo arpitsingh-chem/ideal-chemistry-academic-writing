@@ -11,7 +11,7 @@ adopt the new research layer.
 ```bash
 git pull
 python3 -m pip install -e ".[figures,docx,dev]"
-python3 -m pytest -q                        # expect 349 passed, 3 skipped
+python3 -m pytest -q                        # expect 360 passed, 3 skipped
 python3 -m paperforge doctor                # now also reports the research data layer
 ```
 

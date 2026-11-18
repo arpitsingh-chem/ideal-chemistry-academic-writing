@@ -15,7 +15,7 @@ work stops.
 | Workstream | State | Evidence |
 |---|---|---|
 | Repository autopsy | ✅ complete | `AUDIT_REPORT.md`, `REPOSITORY_INVENTORY.md`, `CAPABILITY_MATRIX.md`, `BUG_REGISTER.md` |
-| Chemistry fixes | ✅ complete (6 defects) | `tests/scientific/` (47 tests) |
+| Chemistry fixes | ✅ complete (6 defects) | `tests/scientific/` (52 reference tests) |
 | Research provider layer | ✅ complete (11 adapters, 7 documented as blocked) | `paperforge/providers/`, `tests/unit/` |
 | Normalised schema + provenance | ✅ complete | `paperforge/research/schema.py`, `tests/integration/` |
 | Deduplication + merge audit | ✅ complete | `research/dedup.py`, `merges` table |
@@ -23,7 +23,9 @@ work stops.
 | Sync pipeline + coverage | ✅ complete | `research/pipeline.py`, `research/coverage.py` |
 | CLI (`research`, `institution`) | ✅ complete | `paperforge/cli_research.py` |
 | IISER Bhopal collection preserved | ✅ complete | `paperforge/institutions/iiserb.py` |
-| Test suite | ✅ 349 passed, 3 skipped | `pytest` |
+| Table-value validation | ✅ complete (1 defect found in this release) | `tests/scientific/test_table_plausibility.py` (24 tests) |
+| Test suite | ✅ 360 passed, 3 skipped | `pytest` |
+| Regression guards on pre-v2.4 behaviour | ✅ complete | `tests/regression/` (11 tests) |
 | Packaging (wheel + sdist) | ✅ built and installed in clean venvs | `dist/`, `FINAL_QA_REPORT.md` |
 | Documentation | ✅ rewritten/added | `README.md`, `docs/`, audit set |
 | Security audit | ✅ complete, no unresolved critical/high | `SECURITY_AUDIT.md` |
@@ -38,14 +40,17 @@ work stops.
 ## 2. Numbers (measured, not estimated)
 
 ```
-tests                349 passed, 3 skipped (network-marked)
+tests                360 passed, 3 skipped (network-marked)
 rule codes           115
 journal profiles     261  (5 per-journal verified, 256 family defaults)
 provider adapters    11   (7 further sources documented as blocked)
 IISER Bhopal works   1,616  · 26 faculty  · 254 venues  · 2009–2026
-demo manuscripts     100.0/100 (Organic Letters) · 99.7/100 (Dalton)
-package artefacts    paperforge-2.4.0-py3-none-any.whl (880,092 B)
-                     paperforge-2.4.0.tar.gz (870,720 B)
+demo manuscripts     100.0/100 (Organic Letters) · 99.7/100 (Dalton, --verify-refs) · 94.9 offline
+package artefacts    paperforge-2.4.0-py3-none-any.whl  (885,840 B)
+                     paperforge-2.4.0.tar.gz            (877,381 B)
+                     sha256 c81e845d…4282cce (wheel) · eb4a6f46…f608 (sdist)
+manifest             217 files · 4,221,727 B · SHA-256 per file, verifies clean
+commits on branch    7 (see `git log --oneline main..HEAD`)
 python               3.13.18 in this environment; CI matrix 3.10–3.13
 ```
 
@@ -74,6 +79,9 @@ python               3.13.18 in this environment; CI matrix 3.10–3.13
 | O-3 | Legal name for the copyright line | user | no |
 | O-4 | Verify remaining 256 journal profiles | future work | no (documented) |
 | O-5 | Execute CI on GitHub to confirm the workflows | after push | no |
+| O-6 | Free OpenAlex API key (restores affiliation/country coverage) | user (needs their e-mail) | no |
+| O-7 | A real `PF_MAILTO` contact address for the deployed pipeline | user | no |
+| O-8 | Verify the remaining 256 journal profiles | maintainer work | no (documented) |
 
 ---
 
@@ -103,4 +111,6 @@ git status                            # anything uncommitted?
 python -m paperforge doctor
 ```
 
-Then read, in order: `FINAL_QA_REPORT.md` → `OPEN ITEMS` above → `DECISIONS.md`.
+Then read, in order: `FINAL_QA_REPORT.md` (what was measured, what was not) → the open
+items above → `DECISIONS.md` → `FINAL_QA_REPORT.md` §8 (how to apply the branch without
+GitHub access).

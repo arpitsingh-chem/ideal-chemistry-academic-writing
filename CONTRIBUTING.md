@@ -14,7 +14,7 @@ git clone https://github.com/arpitsingh-chem/ideal-chemistry-academic-writing
 cd ideal-chemistry-academic-writing
 python3 -m venv .venv && source .venv/bin/activate
 python3 -m pip install -e ".[figures,docx,dev]"
-python3 -m pytest -q          # expect: 349 passed, 3 skipped
+python3 -m pytest -q          # expect: 360 passed, 3 skipped
 python3 -m paperforge doctor
 ```
 

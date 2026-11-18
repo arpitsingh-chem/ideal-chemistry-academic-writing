@@ -70,8 +70,8 @@ python3 -m paperforge check /tmp/pf021        # now: TAB-IMPOSSIBLE-VALUE, evide
 Each now has a permanent guard in the suite:
 
 ```bash
-python3 -m pytest tests/scientific/test_chemistry_reference.py -v
-python3 -m pytest tests/regression -v
+python3 -m pytest tests/scientific/ -v        # independent reference values
+python3 -m pytest tests/regression -v         # the pre-2.4.0 contract, incl. data integrity
 ```
 
 ---

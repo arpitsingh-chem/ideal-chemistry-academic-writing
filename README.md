@@ -16,7 +16,7 @@ paperforge research search "photoredox C–H arylation" --limit 5
 paperforge institution stats                         # the bundled IISER Bhopal collection
 ```
 
-**State of this release:** version 2.4.0 · **349 tests passing, 3 network-marked skips** ·
+**State of this release:** version 2.4.0 · **360 tests passing, 3 network-marked skips** ·
 wheel and sdist built and installed in clean virtual environments · 11 scholarly-provider
 adapters · 115 manuscript rules · 261 journal profiles (5 verified per-journal, 256
 inherited family defaults — see [Honest limitations](#10-honest-limitations)).
@@ -87,7 +87,7 @@ existing research directory.
 | Project | Field | Journal | Result |
 |---|---|---|---|
 | `examples/demo-paper` | organic photoredox, 8 compounds | Organic Letters | 100.0/100, 8/8 DOIs verified |
-| `examples/second-paper` | organometallic photophysics, 6 Ir(III) complexes | Dalton Transactions | 99.7/100 |
+| `examples/second-paper` | organometallic photophysics, 6 Ir(III) complexes | Dalton Transactions | 99.7/100 with `--verify-refs`; 94.9 offline (8 unverified DOIs) |
 
 Both are synthetic but *physically consistent*: every mass, yield and integral in them is
 a real calculation, and the hallucinations that v1 shipped (an impossible HRMS, a 109.9 %
@@ -302,7 +302,7 @@ ordered migrations.
 ## 11. Testing
 
 ```bash
-python3 -m pytest                       # 349 passed, 3 skipped (network-marked)
+python3 -m pytest                       # 360 passed, 3 skipped (network-marked)
 python3 -m pytest -m network            # the live-API tests, skipped by default
 python3 -m pytest tests/scientific -v   # independent chemistry reference values
 python3 -m pytest tests/adversarial -v  # transport faults, hostile payloads, exit codes

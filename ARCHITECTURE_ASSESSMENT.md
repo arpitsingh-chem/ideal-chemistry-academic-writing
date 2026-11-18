@@ -91,7 +91,7 @@ Both are recorded in `CHANGELOG.md` and `BUG_REGISTER.md`.
 |---|---|---|---|
 | New provider layer has undiscovered defects | Medium | Medium | 34 adversarial tests; 4 defects found and fixed pre-release (PF-007…009) |
 | Provider APIs change | High over time | Medium | Fixture tests, capability declarations, per-provider isolation, `research providers` readiness check |
-| Chemistry fixes break the demo projects | Low | High | Demo re-scored after every change (100.0 / 99.7 preserved); 47 reference tests |
+| Chemistry fixes break the demo projects | Low | High | Demo re-scored after every change (100.0 and 99.7 with `--verify-refs`, 94.9 offline, preserved); 47 reference tests |
 | Documentation drifts again | Medium | Medium | Every README number has a command; CI guards relative links; `MAINTENANCE_GUIDE.md` sets a re-verification cadence |
 | Licence ambiguity persists | Certain until owner decides | Medium | Escalated as D-1/D-2; no unilateral action taken |
 

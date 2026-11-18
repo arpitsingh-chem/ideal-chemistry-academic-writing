@@ -222,7 +222,7 @@ Full matrix in `CAPABILITY_MATRIX.md`. Summary:
 | CLI | `research` and `institution` command groups | `paperforge/cli_research.py` |
 | Packaging | PEP 639 metadata, wheel + sdist, clean-venv install verified | `dist/`, `FINAL_QA_REPORT.md` |
 | Docs | README rewritten against measured behaviour; 9 inconsistencies corrected | `README.md`, `CHANGELOG.md` |
-| Tests | 173 → 349 passing (+3 network-marked skips) | `FINAL_QA_REPORT.md` |
+| Tests | 173 → 360 passing (+3 network-marked skips) | `FINAL_QA_REPORT.md` |
 
 The **IISER Bhopal collection is preserved** and given a typed, tested interface
 (`paperforge/institutions/iiserb.py`); nothing in the snapshot was deleted or rewritten.

@@ -89,7 +89,7 @@ table is asserted without one.
 
 | Capability | v2.3.0 | v2.4.0 | Verified by |
 |---|---|---|---|
-| Test suite | A (173) | A (349) | `pytest` |
+| Test suite | A (173) | A (360) | `pytest` |
 | Independent scientific fixtures | C | A | `tests/scientific/` |
 | Adversarial suite | B | A | `tests/adversarial/` |
 | Wheel + sdist build | C | A | `python -m build` |

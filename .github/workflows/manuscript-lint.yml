@@ -65,7 +65,7 @@ jobs:
           assert "[?]" not in text, "unresolved citations"
           print(f"PDF OK: {len(r.pages)} pages")
           PY
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: demo-manuscript
           path: |

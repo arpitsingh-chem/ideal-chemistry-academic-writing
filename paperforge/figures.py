@@ -42,6 +42,9 @@ class ImageInfo:
         return 0.0
 
 
+PIL_MISSING = "__pil_missing__"
+
+
 def image_info(path: str | Path) -> ImageInfo:
     p = Path(path)
     if not p.exists():
@@ -61,7 +64,10 @@ def image_info(path: str | Path) -> ImageInfo:
             mode = im.mode
             w, h = im.size
         return ImageInfo(p, True, format=fmt, mode=mode, width_px=w, height_px=h, dpi=dpi_val)
-    except Exception as exc:  # pragma: no cover - PIL missing/corrupt file
+    except ImportError:
+        # Pillow is an optional extra; its absence is not a defect in the figure.
+        return ImageInfo(p, True, format=suffix.lstrip("."), error=PIL_MISSING)
+    except Exception as exc:  # pragma: no cover - corrupt/unreadable file
         return ImageInfo(p, True, format=suffix.lstrip("."), error=f"cannot read image: {exc}")
 
 
@@ -74,6 +80,15 @@ def check_figure_file(fig: Figure, root: Path, min_dpi: int = 300,
         issues.append({"code": "FIG-MISSING", "severity": "error",
                        "message": f"{fig.id}: file not found ({fig.file})",
                        "hint": "fix the path or add the asset"})
+        return issues
+    if info.error == PIL_MISSING:
+        # Missing optional dependency, not a bad figure. Reporting it per file as an
+        # *error* ("re-export the figure") blamed the author for a missing package;
+        # measured on a stock wheel install, this cost 4.8/100 on an otherwise perfect
+        # demo project.
+        issues.append({"code": "FIG-NO-PIL", "severity": "info",
+                       "message": f"{fig.id}: raster checks skipped — Pillow is not installed",
+                       "hint": 'pip install "paperforge[figures]" to enable dpi/size checks'})
         return issues
     if info.error and not info.vector:
         issues.append({"code": "FIG-READ", "severity": "error",

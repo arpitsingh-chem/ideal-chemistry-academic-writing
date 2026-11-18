@@ -30,6 +30,8 @@ Here we report ... (approach + headline result).
 Compound **1** was prepared per literature \cite{kapur2021ch};
 compounds **2–7** are new (Scheme 1).
 
+<!-- `figures/fig1.pdf` ships with this template (the same artwork as
+     templates/latex/manuscript/figures/example_figure.pdf); replace it with your own. -->
 ![Key figure: caption with conditions and take-away.](figures/fig1.pdf){#fig:key}
 
 The data reveal ... (λ_max = 452 nm, Φ_PL = 0.31).

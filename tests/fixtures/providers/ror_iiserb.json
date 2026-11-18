@@ -1,0 +1,363 @@
+{
+ "number_of_results": 47553,
+ "time_taken": 67,
+ "items": [
+  {
+   "admin": {
+    "created": {
+     "date": "2018-11-14",
+     "schema_version": "1.0"
+    },
+    "last_modified": {
+     "date": "2024-12-11",
+     "schema_version": "2.1"
+    }
+   },
+   "domains": [
+    "iiserb.ac.in"
+   ],
+   "established": 2008,
+   "external_ids": [
+    {
+     "all": [
+      "501100010713"
+     ],
+     "preferred": "501100010713",
+     "type": "fundref"
+    },
+    {
+     "all": [
+      "grid.462376.2"
+     ],
+     "preferred": "grid.462376.2",
+     "type": "grid"
+    },
+    {
+     "all": [
+      "0000 0004 1763 8131"
+     ],
+     "preferred": null,
+     "type": "isni"
+    },
+    {
+     "all": [
+      "Q6020697"
+     ],
+     "preferred": null,
+     "type": "wikidata"
+    }
+   ],
+   "id": "https://ror.org/02rb21j89",
+   "links": [
+    {
+     "type": "website",
+     "value": "https://www.iiserb.ac.in"
+    },
+    {
+     "type": "wikipedia",
+     "value": "https://en.wikipedia.org/wiki/Indian_Institute_of_Science_Education_and_Research,_Bhopal"
+    }
+   ],
+   "locations": [
+    {
+     "geonames_details": {
+      "continent_code": "AS",
+      "continent_name": "Asia",
+      "country_code": "IN",
+      "country_name": "India",
+      "country_subdivision_code": "MP",
+      "country_subdivision_name": "Madhya Pradesh",
+      "lat": 23.25469,
+      "lng": 77.40289,
+      "name": "Bhopal"
+     },
+     "geonames_id": 1275841
+    }
+   ],
+   "names": [
+    {
+     "lang": null,
+     "types": [
+      "acronym"
+     ],
+     "value": "IISER"
+    },
+    {
+     "lang": "en",
+     "types": [
+      "alias"
+     ],
+     "value": "IISER - Bhopal"
+    },
+    {
+     "lang": null,
+     "types": [
+      "alias"
+     ],
+     "value": "IISER-B"
+    },
+    {
+     "lang": "en",
+     "types": [
+      "ror_display",
+      "label"
+     ],
+     "value": "Indian Institute of Science Education and Research, Bhopal"
+    },
+    {
+     "lang": "ne",
+     "types": [
+      "label"
+     ],
+     "value": "\u092d\u093e\u0930\u0924\u0940\u092f \u0935\u093f\u091c\u094d\u091e\u093e\u0928 \u0936\u093f\u0915\u094d\u0937\u093e \u090f\u0935\u0902 \u0905\u0928\u0941\u0938\u0902\u0927\u093e\u0928 \u0938\u0902\u0938\u094d\u0925\u093e\u0928 \u092d\u094b\u092a\u093e\u0932"
+    }
+   ],
+   "relationships": [],
+   "status": "active",
+   "types": [
+    "education",
+    "funder"
+   ]
+  },
+  {
+   "admin": {
+    "created": {
+     "date": "2018-11-14",
+     "schema_version": "1.0"
+    },
+    "last_modified": {
+     "date": "2024-12-11",
+     "schema_version": "2.1"
+    }
+   },
+   "domains": [
+    "iiserbpr.ac.in"
+   ],
+   "established": 2016,
+   "external_ids": [
+    {
+     "all": [
+      "grid.499269.9"
+     ],
+     "preferred": "grid.499269.9",
+     "type": "grid"
+    },
+    {
+     "all": [
+      "0000 0004 6022 0689"
+     ],
+     "preferred": null,
+     "type": "isni"
+    },
+    {
+     "all": [
+      "Q24952343"
+     ],
+     "preferred": null,
+     "type": "wikidata"
+    }
+   ],
+   "id": "https://ror.org/023vrr657",
+   "links": [
+    {
+     "type": "website",
+     "value": "http://www.iiserbpr.ac.in/"
+    },
+    {
+     "type": "wikipedia",
+     "value": "https://en.wikipedia.org/wiki/Indian_Institute_of_Science_Education_and_Research_Berhampur"
+    }
+   ],
+   "locations": [
+    {
+     "geonames_details": {
+      "continent_code": "AS",
+      "continent_name": "Asia",
+      "country_code": "IN",
+      "country_name": "India",
+      "country_subdivision_code": "OD",
+      "country_subdivision_name": "Odisha",
+      "lat": 19.31151,
+      "lng": 84.7929,
+      "name": "Brahmapur"
+     },
+     "geonames_id": 1275198
+    }
+   ],
+   "names": [
+    {
+     "lang": null,
+     "types": [
+      "acronym"
+     ],
+     "value": "IISER"
+    },
+    {
+     "lang": null,
+     "types": [
+      "alias"
+     ],
+     "value": "IISER Berhampur"
+    },
+    {
+     "lang": "en",
+     "types": [
+      "ror_display",
+      "label"
+     ],
+     "value": "Indian Institute of Science Education and Research Berhampur"
+    }
+   ],
+   "relationships": [],
+   "status": "active",
+   "types": [
+    "education"
+   ]
+  }
+ ],
+ "meta": {
+  "types": [
+   {
+    "id": "education",
+    "title": "education",
+    "count": 13123
+   },
+   {
+    "id": "funder",
+    "title": "funder",
+    "count": 11183
+   },
+   {
+    "id": "facility",
+    "title": "facility",
+    "count": 10745
+   },
+   {
+    "id": "nonprofit",
+    "title": "nonprofit",
+    "count": 8244
+   },
+   {
+    "id": "government",
+    "title": "government",
+    "count": 5657
+   },
+   {
+    "id": "other",
+    "title": "other",
+    "count": 3606
+   },
+   {
+    "id": "healthcare",
+    "title": "healthcare",
+    "count": 2812
+   },
+   {
+    "id": "company",
+    "title": "company",
+    "count": 2274
+   },
+   {
+    "id": "archive",
+    "title": "archive",
+    "count": 1068
+   }
+  ],
+  "countries": [
+   {
+    "id": "us",
+    "title": "United States",
+    "count": 10076
+   },
+   {
+    "id": "cn",
+    "title": "China",
+    "count": 4720
+   },
+   {
+    "id": "jp",
+    "title": "Japan",
+    "count": 3975
+   },
+   {
+    "id": "in",
+    "title": "India",
+    "count": 2335
+   },
+   {
+    "id": "gb",
+    "title": "United Kingdom",
+    "count": 1895
+   },
+   {
+    "id": "ru",
+    "title": "Russia",
+    "count": 1636
+   },
+   {
+    "id": "fr",
+    "title": "France",
+    "count": 1566
+   },
+   {
+    "id": "de",
+    "title": "Germany",
+    "count": 1510
+   },
+   {
+    "id": "ca",
+    "title": "Canada",
+    "count": 1423
+   },
+   {
+    "id": "au",
+    "title": "Australia",
+    "count": 862
+   }
+  ],
+  "continents": [
+   {
+    "id": "as",
+    "title": "Asia",
+    "count": 16909
+   },
+   {
+    "id": "eu",
+    "title": "Europe",
+    "count": 14409
+   },
+   {
+    "id": "na",
+    "title": "North America",
+    "count": 12013
+   },
+   {
+    "id": "af",
+    "title": "Africa",
+    "count": 2120
+   },
+   {
+    "id": "oc",
+    "title": "Oceania",
+    "count": 1085
+   },
+   {
+    "id": "sa",
+    "title": "South America",
+    "count": 1021
+   },
+   {
+    "id": "an",
+    "title": "Antarctica",
+    "count": 2
+   }
+  ],
+  "statuses": [
+   {
+    "id": "active",
+    "title": "active",
+    "count": 47553
+   }
+  ]
+ }
+}

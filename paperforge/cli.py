@@ -562,6 +562,9 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--out", default="scheme.png")
     p.set_defaults(func=cmd_scheme)
 
+    from .cli_research import add_parsers as _add_research_parsers
+    _add_research_parsers(sub)
+
     p = sub.add_parser("doctor", help="environment check")
     p.set_defaults(func=cmd_doctor)
 

@@ -1,39 +1,74 @@
 [build-system]
-requires = ["setuptools>=68"]
+requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "paperforge"
-version = "2.3.0"
-description = "Chemistry-aware manuscript engine: compose, verify, score and package a paper."
+version = "2.4.0"
+description = "Chemistry manuscript engine and global research intelligence: compose, verify, score, package — and search the world's open scholarly indexes."
 readme = "README.md"
 requires-python = ">=3.10"
-license = {text = "CC BY 4.0 (content); code provided for reuse"}
-authors = [{name = "Ideal Chemistry Academic Writing contributors"}]
-keywords = ["chemistry", "manuscript", "journals", "ACS", "RSC", "Wiley", "peer review"]
+# PEP 639 licence expression. The repository content is CC BY 4.0; see
+# LICENSING_AND_PROVENANCE_AUDIT.md for the code/content split and the
+# decision record behind it.
+license = "CC-BY-4.0 AND MIT"   # content (CC BY 4.0) + code (MIT); see LICENSE/LICENSE-CODE
+license-files = ["LICENSE", "LICENSE-CODE", "THIRD_PARTY_NOTICES.md"]
+# Original project identity is preserved alongside the current owner (D-2, 2026-11-18).
+authors = [
+  { name = "Arpit Singh" },
+  { name = "Ideal Chemistry Academic Writing contributors" },
+]
+maintainers = [{ name = "Arpit Singh" }]
+keywords = ["chemistry", "manuscript", "journals", "peer review", "openalex",
+            "crossref", "bibliometrics", "ACS", "RSC", "Wiley", "Elsevier",
+            "reproducibility"]
 classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Intended Audience :: Science/Research",
   "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
   "Operating System :: OS Independent",
   "Topic :: Scientific/Engineering :: Chemistry",
   "Topic :: Text Processing :: Markup :: LaTeX",
+  "Typing :: Typed",
 ]
 dependencies = ["PyYAML>=6.0"]
 
 [project.optional-dependencies]
+# Everything below is optional: `pip install paperforge` runs the checker,
+# the journal engine, the reference verifier and the research layer.
 figures = ["Pillow>=9", "matplotlib>=3.5"]
 docx = ["python-docx>=1.0"]
 structures = ["rdkit>=2023.9"]
-dev = ["pytest>=7", "pypdf>=3"]
+dev = [
+  "pytest>=7",
+  "pytest-cov>=4",
+  "pypdf>=3",
+  "ruff>=0.5",
+  "build>=1.0",
+]
+all = ["paperforge[figures,docx,structures,dev]"]
 
 [project.urls]
 Homepage = "https://github.com/arpitsingh-chem/ideal-chemistry-academic-writing"
+Documentation = "https://github.com/arpitsingh-chem/ideal-chemistry-academic-writing/tree/main/docs"
 Repository = "https://github.com/arpitsingh-chem/ideal-chemistry-academic-writing"
+Issues = "https://github.com/arpitsingh-chem/ideal-chemistry-academic-writing/issues"
+Changelog = "https://github.com/arpitsingh-chem/ideal-chemistry-academic-writing/blob/main/CHANGELOG.md"
 
 [project.scripts]
 paperforge = "paperforge.cli:main"
 
 [tool.setuptools]
-packages = ["paperforge"]
+packages = [
+  "paperforge",
+  "paperforge.providers",
+  "paperforge.research",
+  "paperforge.institutions",
+]
 
 [tool.setuptools.package-data]
 paperforge = ["data/*.csv", "data/*.json", "data/*.md"]
@@ -41,4 +76,18 @@ paperforge = ["data/*.csv", "data/*.json", "data/*.md"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-q"
-markers = ["network: requires internet access (Crossref)"]
+markers = [
+  "network: requires internet access (skipped by default)",
+  "slow: long-running (10k-record stress tests)",
+]
+
+[tool.ruff]
+line-length = 110
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "SIM"]
+ignore = ["E501", "B008", "SIM108"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["B011", "SIM117"]

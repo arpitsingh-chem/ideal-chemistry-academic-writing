@@ -1,0 +1,36 @@
+name: Feature request
+description: Propose a capability
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: The research problem
+      description: What genuinely goes wrong today? Not "it would be nice if".
+    validations:
+      required: true
+  - type: textarea
+    id: verification
+    attributes:
+      label: How would we know it works?
+      description: A feature without a verification story will not be merged. How can its output be checked independently?
+    validations:
+      required: true
+  - type: dropdown
+    id: dependencies
+    attributes:
+      label: Does it need a new dependency or a third-party service?
+      options:
+        - "No — standard library is enough"
+        - "Yes — a Python package (which?)"
+        - "Yes — an external API (which? is it open?)"
+        - "Not sure"
+    validations:
+      required: true
+  - type: checkboxes
+    id: rules
+    attributes:
+      label: Project constraints
+      options:
+        - label: It does not require scraping, paywall bypass, or bypassing an access control
+        - label: It does not produce numbers that cannot be measured (impact factors, acceptance rates, invented benchmarks)

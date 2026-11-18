@@ -16,9 +16,9 @@ paperforge research search "photoredox C–H arylation" --limit 5
 paperforge institution stats                         # the bundled IISER Bhopal collection
 ```
 
-**State of this release:** version 2.4.0 · **360 tests passing, 3 network-marked skips** ·
+**State of this release:** version 2.4.0 · **365 tests passing, 3 network-marked skips** ·
 wheel and sdist built and installed in clean virtual environments · 11 scholarly-provider
-adapters · 115 manuscript rules · 261 journal profiles (5 verified per-journal, 256
+adapters · 116 manuscript rules · 261 journal profiles (5 verified per-journal, 256
 inherited family defaults — see [Honest limitations](#10-honest-limitations)).
 
 ---
@@ -72,7 +72,7 @@ paperforge doctor
 paperforge new my-paper --journal "Organic Letters"
 cd my-paper                       # edit paper.yaml, data/*.csv, figures/, refs/
 paperforge refs verify .          # Crossref-check every DOI, flag retractions
-paperforge check .                # 115 rules, 0–100 score, exits non-zero on a gate
+paperforge check .                # 116 rules, 0–100 score, exits non-zero on a gate
 paperforge draft . --format all --cover-letter --highlights
 paperforge si .                   # Supporting Information .tex
 paperforge bundle . --strict      # submission zip + checklist + manifest
@@ -135,6 +135,12 @@ Keyless OpenAlex requests share **one daily budget per IP address**, and this au
 exhausted it. A free key (from `https://openalex.org/settings/api`) has its own budget.
 PaperForge reads `OPENALEX_API_KEY` and will not retry a spent daily quota inside a run —
 it records `retryAfter` and moves on.
+
+For the scheduled sync, add the key yourself as a repository secret (**Settings → Secrets
+and variables → Actions**): `OPENALEX_API_KEY` (secret) and optionally `PF_MAILTO`
+(variable). `.github/workflows/research-sync.yml` already reads both. Nobody else — this
+agent included — needs to see either value. Without the key the weekly run still works and
+reports the missing coverage.
 
 ---
 
@@ -217,7 +223,7 @@ v2.3 README did — see [`AUDIT_REPORT.md`](AUDIT_REPORT.md) §4).
 | `new PATH` | scaffold `paper.yaml`, `data/`, `figures/`, `refs/` |
 | `ingest FOLDER --out P` | turn a research folder (CSV/figures/.bib) into a project |
 | `context PATH` | print the grounded evidence pack for an LLM |
-| `check PATH` / `check --file X.tex\|.md\|.docx` | 115 rules, 0–100 score, grade |
+| `check PATH` / `check --file X.tex\|.md\|.docx` | 116 rules, 0–100 score, grade |
 | `score PATH --min 90` | CI gate (non-zero exit under the bar) |
 | `draft PATH --format all` | Markdown, LaTeX, DOCX, TXT (`--cover-letter`, `--highlights`) |
 | `si PATH` | Supporting Information `.tex` |
@@ -302,7 +308,7 @@ ordered migrations.
 ## 11. Testing
 
 ```bash
-python3 -m pytest                       # 360 passed, 3 skipped (network-marked)
+python3 -m pytest                       # 365 passed, 3 skipped (network-marked)
 python3 -m pytest -m network            # the live-API tests, skipped by default
 python3 -m pytest tests/scientific -v   # independent chemistry reference values
 python3 -m pytest tests/adversarial -v  # transport faults, hostile payloads, exit codes
@@ -325,10 +331,15 @@ The suite needs **no network**. Live checks are opt-in (`-m network`).
 * **Sources and their terms:** [`DATA_SOURCES.md`](DATA_SOURCES.md),
   [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md).
 * **Coverage, measured:** [`GLOBAL_RESEARCH_COVERAGE.md`](GLOBAL_RESEARCH_COVERAGE.md).
-* **Licence:** this repository is distributed under **CC BY 4.0** (`LICENSE`). The v2.3
-  README claimed "code MIT" without an MIT licence existing; that claim has been removed
-  and the question of a code-specific licence is recorded as an open owner decision in
-  [`LICENSING_AND_PROVENANCE_AUDIT.md`](LICENSING_AND_PROVENANCE_AUDIT.md).
+* **Licence — two parts, decided by the owner on 2026-11-18:**
+  the **software** (`paperforge/`, `scripts/`, `tests/`, CI) is **MIT**
+  ([`LICENSE-CODE`](LICENSE-CODE)); the **documentation** and the **packaged data**
+  (`README.md`, `docs/`, the audit reports, `paperforge/data/`, `templates/`) are
+  **CC BY 4.0** ([`LICENSE`](LICENSE)).
+  This resolves the v2.3 contradiction, where the README claimed "code MIT" while no MIT
+  text existed; see [`LICENSING_AND_PROVENANCE_AUDIT.md`](LICENSING_AND_PROVENANCE_AUDIT.md)
+  (D-1/D-2 now closed). Copyright (c) 2026 Arpit Singh.
+  Third-party material keeps its own terms ([`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md)).
 * **Institutional mark:** the IISER Bhopal logo in the thesis template belongs to the
   institution; forks should replace it (see `THIRD_PARTY_NOTICES.md` §3).
 

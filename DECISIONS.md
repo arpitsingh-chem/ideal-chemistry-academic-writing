@@ -74,7 +74,7 @@ this". For ChemRxiv the evidence is concrete: HTTP 403 Cloudflare challenge on 2
 **Reverse if.** A provider publishes a usable API; then the entry moves to `IMPLEMENTED`
 with a fixture test.
 
-## D-07 — No unilateral licensing change
+## D-07 — No unilateral licensing change *(superseded 2026-11-18)*
 
 **Context.** `LICENSE` is CC BY 4.0; the README claimed MIT for code; no MIT text exists;
 `LICENSE` has no copyright line; `CITATION.cff` says "Arpit Singh" while the brief says
@@ -84,6 +84,9 @@ invent a copyright holder; escalate D-1/D-2 in `LICENSING_AND_PROVENANCE_AUDIT.m
 **Why.** Relicensing and copyright attribution are the owner's legal decisions, and
 institutional authorship may affect ownership. A technically tidy but legally unauthorised
 change is worse than an honest open question.
+
+**Superseded.** The owner decided on 2026-11-18: **CC BY 4.0 for documentation and packaged
+data, MIT for the software**, copyright "Arpit Singh", 2026. See D-12.
 
 ## D-08 — Journal profiles carry `verified: false` when they are not verified
 
@@ -116,3 +119,19 @@ marked `-m network` and skipped by default.
 **Why.** Deterministic CI, and the suite stays runnable on a plane. The cost is fixture
 staleness, mitigated by the scheduled `Research sync` workflow, which exercises the real
 APIs weekly and reports drift without failing the build.
+
+## D-12 — Two-part licence: MIT for software, CC BY 4.0 for content and data
+
+**Context.** The repository's README promised MIT for code that did not exist, while
+`LICENSE` was CC BY 4.0 for everything and carried no copyright line (D-07).
+**Choice.** `LICENSE-CODE` grants MIT over `paperforge/`, `scripts/`, `tests/` and the CI
+configuration; `LICENSE` keeps the unmodified CC BY 4.0 text for documentation and packaged
+data, with a notice block naming the copyright holder; `pyproject.toml` declares the PEP 639
+expression `CC-BY-4.0 AND MIT` and ships both files.
+**Why.** Software wants a permissive, patent-quiet, registry-recognised licence that
+packagers and downstream projects can reason about; written guidance and curated data want
+attribution. This is also what the original README intended, so it removes a false claim by
+making it true rather than by deleting it.
+**Cost.** Two files, and a reader must know which applies. Mitigated by the scope paragraph
+in `LICENSE-CODE` and README §12.
+**Reverse if.** Never without the copyright holder's explicit instruction.

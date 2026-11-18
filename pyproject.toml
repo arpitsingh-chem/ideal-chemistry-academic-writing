@@ -11,10 +11,14 @@ requires-python = ">=3.10"
 # PEP 639 licence expression. The repository content is CC BY 4.0; see
 # LICENSING_AND_PROVENANCE_AUDIT.md for the code/content split and the
 # decision record behind it.
-license = "CC-BY-4.0"
-license-files = ["LICENSE", "THIRD_PARTY_NOTICES.md"]
-authors = [{ name = "PaperForge contributors" }]
-maintainers = [{ name = "PaperForge maintainers" }]
+license = "CC-BY-4.0 AND MIT"   # content (CC BY 4.0) + code (MIT); see LICENSE/LICENSE-CODE
+license-files = ["LICENSE", "LICENSE-CODE", "THIRD_PARTY_NOTICES.md"]
+# Original project identity is preserved alongside the current owner (D-2, 2026-11-18).
+authors = [
+  { name = "Arpit Singh" },
+  { name = "Ideal Chemistry Academic Writing contributors" },
+]
+maintainers = [{ name = "Arpit Singh" }]
 keywords = ["chemistry", "manuscript", "journals", "peer review", "openalex",
             "crossref", "bibliometrics", "ACS", "RSC", "Wiley", "Elsevier",
             "reproducibility"]

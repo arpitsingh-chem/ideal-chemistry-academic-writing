@@ -24,16 +24,18 @@ input · **S3** = crash/data loss · **S4** = documentation untruth · **S5** = 
 | PF-013 | S4 | docs | "252 journals" — 254 venue strings, 251 after documented exclusions | snapshot | **Fixed** |
 | PF-014 | S4 | docs | "136 tests" vs 173 passing | `pytest` | **Fixed** |
 | PF-015 | S4 | docs | Badges are static shields.io images presented as test/rule status | `README.md:3-5` | **Fixed** (replaced with a CI workflow badge + explicit note) |
-| PF-016 | S4 | legal | README claims "code MIT"; no MIT licence exists | `LICENSE`, `README.md:253` | **Open — owner decision** (see `LICENSING_AND_PROVENANCE_AUDIT.md`) |
+| PF-016 | S4 | legal | README claims "code MIT"; no MIT licence exists | `LICENSE`, `README.md:253` | **Fixed** — owner chose the two-part split; `LICENSE-CODE` (MIT) added, `LICENSE` (CC BY 4.0) annotated, copyright line added |
 | PF-017 | S5 | cli | `paperforge rules` prints codes discovered by regex over source, so a rule mentioned only in a comment would be listed | `cli.py:_all_rule_codes` | **Accepted** (documented; no false positives observed) |
 | PF-018 | S5 | chem | `check_hrms` tolerance uses `max(1.0, tol_ppm)`, so a caller asking for 0.5 ppm silently gets 1.0 | `chem.py:check_hrms` | **Accepted** (deliberate floor; documented) |
 | PF-019 | S4 | docs | `CITATION.cff` declared version 2.1.0 while the package was 2.3.0 | `CITATION.cff` | **Fixed** |
 | PF-020 | S5 | packaging | `pyproject.toml` declared a free-text `license = {text = ...}` and omitted the new subpackages from `packages` | `pyproject.toml` | **Fixed** (PEP 639 + explicit package list) |
 | PF-021 | S1 | checks | Declared CSV tables were used only as *grounding* numbers, never validated: a yield of **194 %** in `data/scope.csv` still scored 100.0/100 with zero findings | `check_project` → `check_table_values` (absent before 2.4.0); reproduction below | **Fixed** (new `TAB-IMPOSSIBLE-VALUE`, 14 tests in `tests/scientific/test_table_plausibility.py`) |
+| PF-022 | S4 | figures | A missing optional dependency (Pillow) was reported as four `FIG-READ` **errors** — "cannot read image: No module named 'PIL'" with the hint "re-export the figure" — and cost a perfect demo project 4.8 points | installed wheel in a clean venv without extras: `check examples/demo-paper` → 95.2/100, 4 ✗ | **Fixed** — `FIG-NO-PIL` (info) with an actionable hint; grouped note now says "display item(s)" instead of "compounds" (5 tests, `tests/unit/test_figures_optional.py`) |
 
 \* PF-007/008/009 are defects in the **new** research layer, found by the adversarial
-suite while it was being written. PF-021 is an inherited gap in the *manuscript* engine,
-found by black-box testing while writing the tutorials for this release. All are recorded
+suite while it was being written. PF-021 and PF-022 are inherited gaps in the *manuscript*
+engine, found by black-box testing while writing the tutorials and while installing the built
+wheel without extras. All are recorded
 here because the register is the project's defect history, not just the inherited one.
 
 ---
@@ -80,5 +82,4 @@ python3 -m pytest tests/regression -v         # the pre-2.4.0 contract, incl. da
 
 | ID | Needs | Default if no decision |
 |---|---|---|
-| PF-016 | A licensing decision (see audit): single CC BY 4.0 for everything, or CC BY 4.0 content + MIT code | Repository keeps CC BY 4.0 as-is; README states it accurately; no relicense applied |
-| — | Legal name for the copyright line in `LICENSE` / `CITATION.cff` ("Arpit Singh" in CITATION.cff vs "Arpit Rajput" in the project brief) | Copyright line left exactly as inherited (no name invented) |
+| — | none outstanding: D-1 (licence split) and D-2 (name) were decided by the owner on 2026-11-18 | — |

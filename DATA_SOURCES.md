@@ -44,7 +44,21 @@ the public endpoint from a clean network. HTTP status and response shape recorde
 | **NIST Chemistry WebBook** | No public API; HTML only; bulk reuse needs permission. | PubChem for structure/property cross-checks. |
 | **RCSB PDB / COD** | Public APIs exist, but PaperForge has no crystallographic validator yet; integrating storage without a validator would add data without capability. | `ROADMAP.md` (crystallography track). |
 
-## 3. Rate-limit and quota policy
+## 3. Credentials and CI secrets
+
+Two optional values make the pipeline faster and more complete. Both are yours to create
+and to store; no value is ever committed, logged, or requested by an agent.
+
+| Name | Kind | Where it goes | Effect |
+|---|---|---|---|
+| `OPENALEX_API_KEY` | secret | GitHub → Settings → Secrets and variables → Actions (**and** your shell for local runs) | OpenAlex's own daily budget instead of the shared per-IP pool — which ran out during this audit and zeroed affiliation/country coverage |
+| `PF_MAILTO` | variable | same place | identifies a polite client; **required** by Unpaywall |
+
+`.github/workflows/research-sync.yml` reads `secrets.OPENALEX_API_KEY` and
+`vars.PF_MAILTO`. Publishing to PyPI, if ever approved, uses Trusted Publishing (OIDC), so
+no long-lived token exists anywhere.
+
+## 4. Rate-limit and quota policy
 
 | Provider | Policy implemented |
 |---|---|
@@ -60,7 +74,7 @@ the public endpoint from a clean network. HTTP status and response shape recorde
 All intervals are overridable via `PF_HTTP_INTERVAL`, timeouts via `PF_HTTP_TIMEOUT`,
 retries via `PF_HTTP_TRIES`, and the contact address via `PF_MAILTO`.
 
-## 4. What is stored, and what is not
+## 5. What is stored, and what is not
 
 **Stored:** bibliographic metadata returned by the APIs (titles, authors, venue, dates,
 identifiers, abstracts where the provider publishes them, citation counts with the date
@@ -71,7 +85,7 @@ for provenance.
 e-mail addresses harvested from papers, or anything obtained by circumventing
 authentication, paywalls, CAPTCHAs or robots directives. No provider is scraped.
 
-## 5. Attribution requirements
+## 6. Attribution requirements
 
 | Source | Obligation | Where honoured |
 |---|---|---|
@@ -87,7 +101,7 @@ authentication, paywalls, CAPTCHAs or robots directives. No provider is scraped.
 | ROR | CC0 | notices |
 | PubChem | public domain; cite PubChem | notices |
 
-## 6. Reproducing the access checks
+## 7. Reproducing the access checks
 
 ```bash
 curl -s -o /dev/null -w '%{http_code}\n' 'https://api.openalex.org/works/doi:10.1021/jacs.5c13581?mailto=you@example.org'

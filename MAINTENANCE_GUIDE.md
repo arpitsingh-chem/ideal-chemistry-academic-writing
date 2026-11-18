@@ -139,6 +139,7 @@ git push origin main --follow-tags
 Release checklist:
 
 - [ ] `CHANGELOG.md` has the version, dated, with measured numbers
+- [ ] both licence files are in the sdist (`LICENSE` content, `LICENSE-CODE` software)
 - [ ] `CITATION.cff` `version` and `date-released` updated to match
 - [ ] `pyproject.toml` version == `paperforge.__version__`
 - [ ] wheel and sdist built, installed in a clean venv, CLI exercised

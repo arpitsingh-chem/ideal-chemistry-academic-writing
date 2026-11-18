@@ -39,13 +39,24 @@ Two problems follow:
 2. **A promise that is not made.** Claiming MIT without MIT text is not a grant of MIT; at
    best it is a misdescription, at worst it misleads downstream packagers.
 
-### Resolution applied on this branch
+### Resolution (owner decision, 2026-11-18)
 
-* `pyproject.toml` now uses a **PEP 639 licence expression** (`license = "CC-BY-4.0"` plus
-  `license-files`), which is machine-readable and matches the actual `LICENSE` file.
-* The README now states the licence **as it is**, and no longer advertises MIT.
-* **No relicensing was performed.** Changing a project's licence is the copyright holder's
-  decision, not an automated one, so it is raised as an explicit owner decision (§6, D-1).
+The copyright holder chose **option (b)**: content CC BY 4.0, code MIT. Applied as:
+
+* `LICENSE-CODE` — new file, MIT text, `Copyright (c) 2026 Arpit Singh`, with an explicit
+  scope paragraph (software = `paperforge/`, `scripts/`, `tests/`, CI configuration).
+* `LICENSE` — an unmodified CC BY 4.0 legal text, preceded by a notice block that states
+  the two-part structure and the same copyright line. The CC text itself was not altered.
+* `pyproject.toml` — PEP 639 SPDX expression `license = "CC-BY-4.0 AND MIT"` with
+  `license-files = [LICENSE, LICENSE-CODE, THIRD_PARTY_NOTICES.md]`, so a wheel or sdist
+  carries both grants.
+* `README.md` §12 states the split and the copyright line.
+* `CITATION.cff` keeps `license: CC-BY-4.0`, which is the correct licence for the written
+  work that a citation points at.
+
+No content was relicensed in the sense of withdrawing a permission: CC BY 4.0 permits
+everything MIT permits (and more, modulo attribution), so downstream users keep their
+existing rights, and the software now additionally has an unambiguous MIT grant.
 
 ## 3. Copyright ownership
 
@@ -101,10 +112,10 @@ author names that are part of the public bibliographic record.
 
 | ID | Decision | Options | Default applied on this branch |
 |---|---|---|---|
-| **D-1** | Licence structure for code vs content | (a) keep CC BY 4.0 for everything; (b) CC BY 4.0 for content/docs + MIT for code (matches the old README's intent, standard for software); (c) another OSI licence | **(a) as-is** — no relicensing performed; README now describes reality |
-| **D-2** | Legal name + year for the copyright line, and whether the institution holds rights to the `chemwriting@iiserb.ac.in` commit | owner to state | **no copyright line added**; reported in `CITATION.cff` exactly as inherited |
+| **D-1** | Licence structure for code vs content | (a) CC BY 4.0 for everything; (b) CC BY 4.0 content + MIT code; (c) another OSI licence | **RESOLVED 2026-11-18 — option (b)**, implemented (`LICENSE`, `LICENSE-CODE`, `pyproject.toml`) |
+| **D-2** | Legal name + year for the copyright line, and whether the institution holds rights to the `chemwriting@iiserb.ac.in` commit | owner to state | **RESOLVED 2026-11-18 — "Arpit Singh", 2026.** The institutional commit remains as inherited; the owner confirmed it does not change ownership. No history rewritten |
 | **D-3** | Keep or remove the IISER Bhopal logo in the thesis template | keep (documented) / remove | **keep, documented** |
-| **D-4** | Whether to publish to PyPI | yes/no | **not published**; build artefacts prepared and verified locally only |
+| **D-4** | Whether to publish to PyPI | yes/no | **open** — not published; artefacts built and verified locally; a free per-user `OPENALEX_API_KEY` is to be added by the owner as a CI secret |
 
 ## 7. Provenance for new contributions on this branch
 

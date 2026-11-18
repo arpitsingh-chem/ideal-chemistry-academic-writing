@@ -15,7 +15,7 @@ have never executed (no push access), and no external provider is guaranteed sta
 
 ```
 $ python3 -m pytest
-360 passed, 3 skipped in 13.25s
+365 passed, 3 skipped in 12.66s
 ```
 
 Baseline before this work (tag `v2.3.0`, measured in `/home/user/origin_repo`):
@@ -26,6 +26,7 @@ inherited suite runs unchanged and still passes (173 of the 360).
 |---|---:|---|
 | inherited (`tests/test_*.py`) | 173 | the v2.3 engine still behaves as documented |
 | `tests/unit/test_providers_offline.py` | 26 | each adapter parses a captured real payload; no network |
+| `tests/unit/test_figures_optional.py` | 5 | a missing optional dependency degrades honestly instead of blaming the user's figure (PF-022) |
 | `tests/integration/test_research_pipeline.py` | 40 | schema round-trip, store migrations, dedup decisions, pipeline stages, CLI wiring, institutional dataset |
 | `tests/adversarial/test_red_team.py` | 34 | hostile input: malformed JSON, HTML-behind-JSON, huge/negative counts, unicode, duplicate DOIs, timeouts, mid-run outage, corrupt fixtures, empty query, SQL-ish strings |
 | `tests/scientific/test_chemistry_reference.py` | 52 | chemistry values against **outside** references (below) |
@@ -75,6 +76,7 @@ and recorded in `BUG_REGISTER.md`.
 | PF-008 | S1 | A whitespace-only DOI produced `work_id "doi:"`, so all such records collided | `tests/adversarial` | `valid_doi()` gate before id assignment |
 | PF-009 | S3 | `ResearchStore.search()` passed a JSON string to `from_dict`, raising `AttributeError` | `tests/adversarial` | decode at the boundary |
 | PF-021 | S1 | A **194 % yield** in a declared CSV table scored 100.0/100 with zero findings | black-box testing while writing the tutorials | `check_table_values()` + `TAB-IMPOSSIBLE-VALUE` |
+| PF-022 | S4 | Installing without the `figures` extra reported four `FIG-READ` **errors** ("re-export the figure") for a missing Pillow, costing the demo 4.8 points | wheel installed in a clean venv without extras: 95.2/100 | `FIG-NO-PIL` info + actionable hint; grouped note says "display item(s)" |
 
 PF-021 is the most uncomfortable finding in this report and the reason it is here: the
 manuscript engine used data tables only to *ground* prose numbers, never to validate them.
@@ -145,11 +147,15 @@ null` for a closed JACS DOI).
 
 ```
 $ python3 -m build
-paperforge-2.4.0-py3-none-any.whl   885,840 bytes
-paperforge-2.4.0.tar.gz             877,381 bytes
-sha256 c81e845d4bfda8d718724791cd115ad35e5bb47705e6384ced260f06f4282cce  (wheel)
-sha256 eb4a6f46098f7b30448ad665899f8157433185b8db51bf82f48cdacae4f1f608  (sdist)
+paperforge-2.4.0-py3-none-any.whl   888,022 bytes
+paperforge-2.4.0.tar.gz             879,583 bytes
+sha256 735468c3eba8c60e5c0e5e4b3d6720152a5b669db17de550e30149d61c96e571  (wheel)
+sha256 2b8df55115c2a3c3a3012eaa08f6847d3292f0ce80508e7e72cd2370382484ed  (sdist)
 ```
+
+`Metadata-Version: 2.4` · `License-Expression: CC-BY-4.0 AND MIT` ·
+`License-File: LICENSE, LICENSE-CODE, THIRD_PARTY_NOTICES.md` · both files verified present
+inside the wheel (`dist-info/licenses/`) and the sdist root.
 
 Both artefacts were installed into **separate clean venvs** and exercised from the
 installed package (not the source tree):
@@ -159,7 +165,7 @@ installed package (not the source tree):
 | `paperforge --version` → `paperforge 2.4.0` | pass | pass |
 | `paperforge doctor` → chemistry engine computes 257.0505 | pass | pass |
 | `paperforge research providers` → 11 adapters | pass | pass |
-| `paperforge check examples/demo-paper` → 100.0 | pass | not run there |
+| `paperforge check examples/demo-paper` → 100.0, 0 errors, 0 warnings | pass (with one `FIG-NO-PIL` note, see PF-022) | not run there |
 | `paperforge institution stats` → 1,616 works | not run there | pass |
 | `from paperforge.providers.registry import IMPLEMENTED, BLOCKED` → 11 / 7 | — | pass |
 
@@ -178,9 +184,11 @@ nothing else; RDKit/Pillow/python-docx/matplotlib stay optional extras.
 |---|---|---|
 | YAML parses (all workflows + dependabot + issue forms) | `yaml.safe_load` over `.github/**/*.yml` | 6/6 OK |
 | Relative documentation links resolve | link scan over every `*.md` | 56 links, **0 broken** |
-| Tree matches manifest | `python3 scripts/verify_manifest.py` | 217 files, **OK** |
+| Tree matches manifest | `python3 scripts/verify_manifest.py` | all files, **OK** |
 | Secret scan | `grep -rInE 'api[_-]?key\|secret\|token\|password'` over source | no credential; only variable names and docs |
 | Version consistency | `pyproject.toml` vs `paperforge.__version__` vs `CITATION.cff` | 2.4.0 / 2.4.0 / 2.4.0 |
+| Licence metadata | `Metadata-Version: 2.4`, `License-Expression: CC-BY-4.0 AND MIT`, both files shipped | pass |
+| Artefact contents | wheel `dist-info/licenses/` + sdist root both contain `LICENSE` and `LICENSE-CODE` | pass |
 | Data honesty guard | `tests/regression` | APC/IF columns empty, 261 rows, 1,616 works |
 | **ruff** | `python3 -m ruff check` | **not run — ruff is not installed here** (CI runs it advisory) |
 | mypy | — | not configured (deliberate: it is a P1 item, see `ROADMAP.md`) |
@@ -238,16 +246,16 @@ Nothing has been pushed, merged, tagged or published. `main` is untouched at `71
 | Dedupe with auditable decisions, never on title alone | **Fully verified** | 40 integration + 34 adversarial tests; PF-007 fixed; `merges` table |
 | Transparent coverage metrics; no "every paper" claim | **Fully verified** | coverage report lists its own gaps and provider health |
 | IISER Bhopal dataset preserved | **Fully verified** | `institution stats` 1,616 works / 26 faculty, 2 tests |
-| Chemistry rules across subdisciplines | **Partially verified** | 115 rules and 52 reference-value tests cover formula/mass/HRMS/NMR/yield/valence; **no NMR/IR/UV-vis/electrochemistry/kinetics validators exist yet** (`ROADMAP.md`) |
+| Chemistry rules across subdisciplines | **Partially verified** | 116 rules and 52 reference-value tests cover formula/mass/HRMS/NMR/yield/valence; **no NMR/IR/UV-vis/electrochemistry/kinetics validators exist yet** (`ROADMAP.md`) |
 | "No check claims experimental truth" | **Fully verified** | `docs/explanations/verification-model.md`, README limitation 8 |
 | Journal intelligence without invented IF/APC | **Fully verified** | guard test: both columns empty in 261 rows; 5 verified profiles with sources |
 | Architecture overhaul only where evidence demands | **Fully verified** | `ARCHITECTURE_ASSESSMENT.md`; no module moved; 173 tests unchanged |
 | Pipeline: incremental + full, retries, backoff, quota, checkpoint, idempotent, dry-run, logs | **Fully verified** | integration tests; live re-run `unchanged 50`; `exit 1` on partial |
 | No paywall/CAPTCHA/auth bypass | **Fully verified** | ChemRxiv 403 documented, not bypassed; `DATA_SOURCES.md` |
 | Packaging, clean-venv install, checksums | **Fully verified** | §5 |
-| CI workflows | **Not verified** | written and YAML-validated, never executed on a runner |
+| CI workflows | **Not verified** | written and YAML-validated, never executed on a runner; `OPENALEX_API_KEY` / `PF_MAILTO` are read from secrets/vars the owner must add |
 | Documentation from the implementation, Diátaxis, executed commands | **Fully verified** | every transcript captured this session; 56 links resolve; 9 false README claims removed |
-| Licence/provenance corrected without rewriting history | **Partially verified** | contradiction documented, no relicensing, no history rewrite; **the licence and copyright-holder decisions are the owner's** (D-1, D-2) |
+| Licence/provenance: contradiction resolved, no history rewrite | **Fully verified** | owner decided 2026-11-18: MIT software (`LICENSE-CODE`) + CC BY 4.0 content/data (`LICENSE`), copyright "Arpit Singh", 2026; both files ship in the wheel and sdist; no commit rewritten |
 | Maintenance, roadmap, migration, state, decisions, manifest | **Fully verified** | all present; manifest verifies 217 files |
 | PyPI Trusted Publishing evaluation | **Not implemented** (deliberate) | evaluated in `ROADMAP.md`; publishing requires explicit owner approval |
 | Push branch / open PR / create release | **Blocked by external access** | no GitHub connector; §8 gives three paths |

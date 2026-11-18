@@ -1,3 +1,19 @@
+Copyright (c) 2026 Arpit Singh
+
+PaperForge is licensed in two parts:
+
+  * the written documentation (README.md, docs/, the audit and guide Markdown)
+    and the packaged data (paperforge/data/, templates/) — Creative Commons
+    Attribution 4.0 International (CC BY 4.0), reproduced in full below;
+  * the software (paperforge/, scripts/, tests/, CI configuration) — MIT, in
+    LICENSE-CODE.
+
+Third-party material is listed in THIRD_PARTY_NOTICES.md and keeps its own terms.
+
+The licence text below is the unmodified CC BY 4.0 legal code.
+
+================================================================================
+
 Attribution 4.0 International (CC BY 4.0)
 
 This work is licensed under the Creative Commons Attribution 4.0 International

@@ -85,6 +85,16 @@ packaging and CI. Backward compatible: every v2.3 command, API and file format s
   guessed at. 14 regression tests in `tests/scientific/test_table_plausibility.py`, and the
   rule count rises 113 → 115.
 
+### Fixed — missing optional dependency no longer blamed on the figure (`PF-022`)
+
+* Installing the wheel **without** the `figures` extra and running `check` on the demo
+  project produced four `FIG-READ` *errors* — "cannot read image: No module named 'PIL'",
+  hint "re-export the figure" — and a score of 95.2/100. The figures were fine; Pillow was
+  simply absent. It is now one informational note per figure (`FIG-NO-PIL`) with the hint
+  `pip install "paperforge[figures]"`, no penalty, and the grouped note reads
+  "display item(s)" rather than "compounds". 5 tests in
+  `tests/unit/test_figures_optional.py`.
+
 ### Fixed — documentation (see `AUDIT_REPORT.md` §4)
 
 * Rule count stated three different ways (87 / 87 / 113). It was 113; **115** after the
@@ -93,10 +103,25 @@ packaging and CI. Backward compatible: every v2.3 command, API and file format s
   5/261 have per-journal verification. Claim corrected; data unchanged.
 * "Faculty analysed 30" — the snapshot contains 26.
 * "252 journals" — 254 venue strings (251 after the documented exclusions).
-* "136 tests" — 173 at audit time, 360 now.
+* "136 tests" — 173 at audit time, 365 now.
 * "code MIT" — no MIT licence exists; claim removed (open owner decision, D-1).
 * `CITATION.cff` version 2.1.0 while the package was 2.3.0.
 * Static shields.io badges presented as CI/test status; replaced with a real workflow badge.
+
+### Licensing (owner decision, 2026-11-18)
+
+* **The software is now MIT; the documentation and packaged data remain CC BY 4.0.**
+  New `LICENSE-CODE` (MIT, "Copyright (c) 2026 Arpit Singh", with an explicit scope
+  paragraph); `LICENSE` keeps the unmodified CC BY 4.0 text behind a notice block that
+  states the two-part structure and the copyright line; `pyproject.toml` declares the
+  PEP 639 expression `CC-BY-4.0 AND MIT` and ships both files.
+* Nothing was withdrawn: CC BY 4.0 already permitted every use MIT permits (with
+  attribution), so existing users keep their rights and the code gains an unambiguous,
+  registry-recognised grant. The v2.3 README's "code MIT" claim is now true instead of
+  unsupported.
+* `.github/workflows/research-sync.yml` documents the two optional CI values the owner
+  should add as a secret (`OPENALEX_API_KEY`) and a variable (`PF_MAILTO`); neither is a
+  stored credential in the repository.
 
 ### Changed
 
@@ -140,7 +165,7 @@ packaging and CI. Backward compatible: every v2.3 command, API and file format s
 ## Verifying a release
 
 ```bash
-python3 -m pytest                       # expect: 360 passed, 3 skipped
+python3 -m pytest                       # expect: 365 passed, 3 skipped
 python3 -m paperforge check examples/demo-paper          # expect: 100.0/100
 python3 -m paperforge research providers                 # expect: 11 adapters, 7 blocked
 python3 -m build && pip install dist/paperforge-2.4.0-py3-none-any.whl

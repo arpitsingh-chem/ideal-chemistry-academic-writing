@@ -1,0 +1,93 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<feed xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/" xmlns:arxiv="http://arxiv.org/schemas/atom" xmlns="http://www.w3.org/2005/Atom">
+  <id>https://arxiv.org/api/gVL1paDel62Mv/1A57Fhnk4rqm4</id>
+  <title>arXiv Query: search_query=all:photoredox&amp;id_list=&amp;start=0&amp;max_results=2</title>
+  <updated>2026-11-18T08:25:10Z</updated>
+  <link href="https://arxiv.org/api/query?search_query=all:photoredox&amp;start=0&amp;max_results=2&amp;id_list=" type="application/atom+xml"/>
+  <opensearch:itemsPerPage>2</opensearch:itemsPerPage>
+  <opensearch:totalResults>5</opensearch:totalResults>
+  <opensearch:startIndex>0</opensearch:startIndex>
+  <entry>
+    <id>http://arxiv.org/abs/2307.12747v1</id>
+    <title>Conduction band tuning by controlled alloying of Fe into Cs2AgBiBr6 double perovskite powders</title>
+    <updated>2023-07-24T12:37:18Z</updated>
+    <link href="https://arxiv.org/abs/2307.12747v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2307.12747v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Halide double perovskite semiconductors such as Cs2AgBiBr6 are widely investigated as a more stable, less toxic alternative to lead-halide perovskites in light conversion applications including photovoltaics and photoredox catalysis. However, the relatively large and indirect bandgap of Cs2AgBiBr6 limits efficient sunlight absorption. Here, we show that controlled replacement of Bi3+ with Fe3+ via mechanochemical synthesis results in a remarkable tunable absorption onset between 2.1 and ~1 eV. Our first-principles density functional theory (DFT) calculations suggest that this bandgap reduction originates primarily from a lowering of the conduction band upon introduction of Fe3+. Furthermore, we find that the tunability of the conduction band energy is reflected in the photoredox activity of these semiconductors. Finally, our DFT calculations predict a direct bandgap when &gt;50% of Bi3+ is replaced with Fe3+. Our findings open new avenues for enhancing the sunlight absorption of double perovskite semiconductors and for harnessing their full potential in sustainable energy applications.</summary>
+    <category term="cond-mat.mtrl-sci" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="physics.chem-ph" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2023-07-24T12:37:18Z</published>
+    <arxiv:primary_category term="cond-mat.mtrl-sci"/>
+    <author>
+      <name>Huygen J. Jobsis</name>
+    </author>
+    <author>
+      <name>Kostas Fykouras</name>
+    </author>
+    <author>
+      <name>Joost W. C. Reinders</name>
+    </author>
+    <author>
+      <name>Jacco van Katwijk</name>
+    </author>
+    <author>
+      <name>Joren M. Dorresteijn</name>
+    </author>
+    <author>
+      <name>Tjom Arens</name>
+    </author>
+    <author>
+      <name>Ina Vollmer</name>
+    </author>
+    <author>
+      <name>Loreta A. Muscarella</name>
+    </author>
+    <author>
+      <name>Linn Leppert</name>
+    </author>
+    <author>
+      <name>Eline M. Hutter</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2203.12508v1</id>
+    <title>Photoredox Processes in the Aggregation and Gelation of Electron-responsive Supramolecular Polymers Based on Viologens</title>
+    <updated>2022-03-23T16:12:35Z</updated>
+    <link href="https://arxiv.org/abs/2203.12508v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2203.12508v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Viologen-based ditopic bis-pyridinyl-triazole bidentate ligands self-assemble in the presence of palladium ions into supramolecular polymers whose structure is imposed by the directed formation of coordination bonds. Light-irradiation of these electron-responsive supramolecular materials triggers a photo-induced electron transfer yielding isolated π-radicals and dimers of radicals. The photoreduction events and the associated dimerization steps trigger a large-scale reorganization occurring within the supramolecular network yielding aggregates or gels depending on the irradiation conditions (power, duration). Detailed electrochemical, spectro-electrochemical and photochemical analyses were conducted to understand the mechanisms at stakes in these light-induced aggregation and gelation.</summary>
+    <category term="cond-mat.soft" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-03-23T16:12:35Z</published>
+    <arxiv:primary_category term="cond-mat.soft"/>
+    <author>
+      <name>Clément Roizard</name>
+    </author>
+    <author>
+      <name>Vivien Andrieux</name>
+    </author>
+    <author>
+      <name>Shagor Chowdhury</name>
+    </author>
+    <author>
+      <name>Quentin Reynard-Feytis</name>
+    </author>
+    <author>
+      <name>Christophe Kahlfuss</name>
+    </author>
+    <author>
+      <name>Eric Saint-Aman</name>
+    </author>
+    <author>
+      <name>Floris Chevallier</name>
+    </author>
+    <author>
+      <name>Christophe Bucher</name>
+    </author>
+    <author>
+      <name>Thomas Gibaud</name>
+    </author>
+    <author>
+      <name>Denis Frath</name>
+    </author>
+  </entry>
+</feed>

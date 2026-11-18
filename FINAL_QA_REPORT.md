@@ -213,8 +213,8 @@ referenced a figure that did not exist. The template now ships the figure.
 
 ## 8. How to apply this work without GitHub access
 
-The branch `feat/global-research-intelligence` (**12 commits** on top of `7161721`) can be
-moved by any of:
+The branch `feat/global-research-intelligence` (commits since `7161721`; count them with
+`git log --oneline main..HEAD`) can be moved by any of:
 
 ```bash
 # 1. bundle (preserves commits, messages and authorship)
@@ -234,9 +234,11 @@ git diff main..feat/global-research-intelligence > /tmp/paperforge-2.4.0.diff
 Nothing has been pushed, merged, tagged or published. `main` is untouched at `7161721`.
 
 **The bundle was tested, not just produced**: fetching it into a fresh clone of the upstream
-repository gives 12 commits, `365 passed / 3 skipped`, `scripts/verify_manifest.py` OK
+repository yields the full branch, `365 passed / 3 skipped`, `scripts/verify_manifest.py` OK
 (215 files) and `check examples/demo-paper` at 100.0 with 0 errors — i.e. the delivery path
 itself is verified, which is the closest this environment can get to the push step.
+Deliberately absent from this report: a commit count. A document that states how many
+commits it is in is wrong as soon as it is committed; run the command instead.
 Artefacts: `/home/user/delivery/{paperforge-2.4.0.bundle,patches/,paperforge-2.4.0.diff,APPLY.md}`.
 
 ---

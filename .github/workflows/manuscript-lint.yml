@@ -50,7 +50,7 @@ jobs:
       - name: Compose manuscript
         run: python -m paperforge draft examples/demo-paper --format all --cover-letter
       - name: Compile PDF
-        uses: wtfjoke/setup-tectonic@v3
+        uses: wtfjoke/setup-tectonic@v4
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Tectonic compile

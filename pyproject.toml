@@ -35,7 +35,7 @@ classifiers = [
   "Topic :: Text Processing :: Markup :: LaTeX",
   "Typing :: Typed",
 ]
-dependencies = ["PyYAML>=6.0"]
+dependencies = ["PyYAML>=6.0.3"]
 
 [project.optional-dependencies]
 # Everything below is optional: `pip install paperforge` runs the checker,

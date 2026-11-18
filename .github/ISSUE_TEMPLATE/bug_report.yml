@@ -1,0 +1,43 @@
+name: Bug report
+description: Something behaves incorrectly
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please include the exact command and output. For a **security** issue, do not use
+        this form — see SECURITY.md.
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: Output of `paperforge --version` or `python -c "import paperforge; print(paperforge.__version__)"`
+    validations:
+      required: true
+  - type: textarea
+    id: command
+    attributes:
+      label: Command and output
+      render: shell
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected, and why
+      description: For a chemistry finding, give the compound, the formula and the value you expected, with a source (PubChem, IUPAC, a paper).
+    validations:
+      required: true
+  - type: textarea
+    id: doctor
+    attributes:
+      label: Environment
+      description: Paste `paperforge doctor`
+      render: shell
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checks
+      options:
+        - label: I have searched existing issues
+          required: true

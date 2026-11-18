@@ -41,7 +41,7 @@ dependencies = ["PyYAML>=6.0"]
 # Everything below is optional: `pip install paperforge` runs the checker,
 # the journal engine, the reference verifier and the research layer.
 figures = ["Pillow>=9", "matplotlib>=3.5"]
-docx = ["python-docx>=1.0"]
+docx = ["python-docx>=1.2.0"]
 structures = ["rdkit>=2023.9"]
 dev = [
   "pytest>=7",

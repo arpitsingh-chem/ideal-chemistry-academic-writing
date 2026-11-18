@@ -96,7 +96,7 @@ jobs:
           /tmp/venv/bin/paperforge research providers > /dev/null
           /tmp/venv/bin/paperforge institution stats > /dev/null
           /tmp/venv/bin/python -c "import paperforge, paperforge.providers.registry, paperforge.research.store; print(paperforge.__version__)"
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: dist
           path: dist/

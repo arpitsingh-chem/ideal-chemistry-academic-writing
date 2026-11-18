@@ -1,6 +1,6 @@
 # Reference: rule codes
 
-The engine emits 115 rule codes across eight weighted dimensions. The authoritative list is
+The engine emits 116 rule codes across eight weighted dimensions. The authoritative list is
 always the one the code produces:
 
 ```bash
@@ -8,7 +8,7 @@ python3 -m paperforge rules | head -3
 ```
 
 ```
-115 rule codes
+116 rule codes
   CHEM-CHARGE-SYNTAX
   CHEM-DBE-FRACTION
   ...
@@ -47,6 +47,17 @@ Grades: A+ ≥ 95 · A ≥ 90 · B ≥ 80 · C ≥ 70 · D ≥ 60 · F below.
 | `CHEM-` | chemistry arithmetic and valence |
 | `REF-` | references and citation hygiene |
 | `FIG-`, `TAB-`, `TOC-` | display items |
+
+### Figure codes worth knowing
+
+| Code | Severity | Meaning |
+|---|---|---|
+| `FIG-MISSING` | error | the declared file does not exist |
+| `FIG-READ` | error | the file exists but cannot be decoded |
+| `FIG-NO-PIL` | info | raster checks skipped because Pillow is not installed (`pip install "paperforge[figures]"`) |
+| `FIG-VECTOR` | info | vector format — resolution-independent |
+| `FIG-DPI` | warn | raster resolution below the journal minimum |
+| `TAB-IMPOSSIBLE-VALUE` | error/warn | a table cell outside its physical range (yield > 100 %, negative mass, T < 0 K) |
 | `JNL-` | journal-specific limits |
 | `ETH-` | ethics and required statements |
 | `STY-`, `GRD-` | style and grounding |

@@ -2,7 +2,7 @@
 
 **Time:** 20 minutes. **You need:** Python ≥ 3.10 and this repository checked out.
 
-You will scaffold a project, verify its references against Crossref, run the 115-rule
+You will scaffold a project, verify its references against Crossref, run the 116-rule
 checker, and produce LaTeX, Markdown and DOCX output.
 
 ---
@@ -165,7 +165,7 @@ cd my-paper/build && tectonic manuscript.tex
 | Step | What verified it |
 |---|---|
 | `doctor` | the chemistry engine computes a known adduct mass |
-| `check` | 115 rules over structure, evidence, references, figures, journal fit, ethics, style |
+| `check` | 116 rules over structure, evidence, references, figures, journal fit, ethics, style |
 | `refs verify` | every DOI resolved at Crossref, retraction lookup included |
 | `draft` | Markdown/LaTeX/DOCX from the same data, so they cannot disagree |
 

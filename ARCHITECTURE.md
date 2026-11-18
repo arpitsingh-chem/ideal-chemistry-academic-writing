@@ -3,7 +3,7 @@
 PaperForge v2.4.0 has two halves that share one rule: **nothing is invented.**
 
 * a **manuscript engine** (v2 lineage, preserved) that turns structured data into a
-  submission-ready paper and checks it against 115 rules and 261 journal profiles;
+  submission-ready paper and checks it against 116 rules and 261 journal profiles;
 * a **research intelligence layer** (new in v2.4) that queries the world's open scholarly
   indexes, normalises what they return, reconciles duplicates, and reports its own coverage.
 
@@ -21,7 +21,7 @@ PaperForge v2.4.0 has two halves that share one rule: **nothing is invented.**
 ├────────────────┤   ├──────────────────────────────┤   ├──────────────────────────┤
 │ project.py     │   │ schema.py    (WorkRecord)    │   │ bundled snapshot         │
 │ draft.py       │   │ dedup.py     (compare/merge) │   │ (offline, typed API)     │
-│ checks.py(115) │   │ store.py     (SQLite + migs) │   └──────────────────────────┘
+│ checks.py(116) │   │ store.py     (SQLite + migs) │   └──────────────────────────┘
 │ chem.py        │   │ pipeline.py  (sync/reconcile)│
 │ figures.py     │   │ coverage.py  (honest metrics)│
 │ refs.py        │   └───────────┬──────────────────┘

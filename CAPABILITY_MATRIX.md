@@ -46,7 +46,7 @@ table is asserted without one.
 | Figure dpi/size validation, TOC crop to exact cm/dpi | A | A | `figures` + `check` |
 | Reaction scheme / TOC drawing | B | B | requires RDKit (not installed here); `HAVE_RDKIT` guard |
 | Submission bundle (zip + checklist + manifest) | A | A | `tests/test_cli_and_bundle.py` |
-| 115-rule checker with weighted score | A | A | `rules`, `check`, `score` |
+| 116-rule checker with weighted score | A | A | `rules`, `check`, `score` |
 | Grounded LLM drafting (opt-in) | C | C | `llm.py`; needs a live model, not exercised |
 | Journal retargeting diff | A | A | `retarget` |
 
@@ -89,7 +89,7 @@ table is asserted without one.
 
 | Capability | v2.3.0 | v2.4.0 | Verified by |
 |---|---|---|---|
-| Test suite | A (173) | A (360) | `pytest` |
+| Test suite | A (173) | A (365) | `pytest` |
 | Independent scientific fixtures | C | A | `tests/scientific/` |
 | Adversarial suite | B | A | `tests/adversarial/` |
 | Wheel + sdist build | C | A | `python -m build` |

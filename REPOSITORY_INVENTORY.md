@@ -30,7 +30,7 @@ recorded at audit time.
 | Module | Lines | Responsibility | Class |
 |---|---|---|---|
 | `chem.py` | 537 | formula parsing, masses, adducts, DBE, yields, NMR integrals | **E** at audit (6 defects) → **A** now |
-| `checks.py` | 1,071 | the 115-rule engine, scoring, report model | A |
+| `checks.py` | 1,071 | the 116-rule engine, scoring, report model | A |
 | `project.py` | 494 | `paper.yaml` model and validation | A |
 | `draft.py` | 519 | composition: abstract, sections, tables, experimental, SI | A |
 | `render.py` | 508 | Markdown / LaTeX / DOCX / TXT rendering | A |

@@ -55,7 +55,7 @@ $ python3 -m paperforge refs verify examples/demo-paper
 8 references: 8 verified, 0 unverified, 0 not found, 0 retracted, 0 duplicate DOI(s)
 
 $ python3 -m paperforge rules | head -1
-115 rule codes    (113 at audit time; two TAB- codes were added by PF-021)
+116 rule codes    (113 at audit time; two TAB- codes were added by PF-021)
 ```
 
 Every one of these is reproducible on the original commit. The engine is real.
@@ -163,7 +163,7 @@ Each row was verified by executing the documented behaviour.
 | D5 | "**252** journals … 253 venue names" (line 166) | 254 distinct non-empty venue strings (251 after excluding `Unknown`, `ChemInform` and merging the two Angewandte spellings) | Off by one |
 | D6 | "Content CC BY 4.0; **code MIT**" (line 253) | `LICENSE` is CC BY 4.0 only; there is no MIT text and no MIT grant | **Licensing defect** |
 | D7 | `tests/` "**136 tests**" (line 239) | 173 passed + 3 skipped at audit time | Stale |
-| D8 | badges "tests-173 passing", "rules-115" | static shields.io images, not CI status | Not evidence of CI state |
+| D8 | badges "tests-173 passing", "rules-116" | static shields.io images, not CI status | Not evidence of CI state |
 | D9 | "every limit in `paperforge/data/` traces to a publisher guideline" (Philosophy §1) | true for 5 journals; 256 inherit family defaults marked `verified: false` | Overstated |
 
 None of these break the software. All of them break trust in the documentation, which for
@@ -222,7 +222,7 @@ Full matrix in `CAPABILITY_MATRIX.md`. Summary:
 | CLI | `research` and `institution` command groups | `paperforge/cli_research.py` |
 | Packaging | PEP 639 metadata, wheel + sdist, clean-venv install verified | `dist/`, `FINAL_QA_REPORT.md` |
 | Docs | README rewritten against measured behaviour; 9 inconsistencies corrected | `README.md`, `CHANGELOG.md` |
-| Tests | 173 → 360 passing (+3 network-marked skips) | `FINAL_QA_REPORT.md` |
+| Tests | 173 → 365 passing (+3 network-marked skips) | `FINAL_QA_REPORT.md` |
 
 The **IISER Bhopal collection is preserved** and given a typed, tested interface
 (`paperforge/institutions/iiserb.py`); nothing in the snapshot was deleted or rewritten.

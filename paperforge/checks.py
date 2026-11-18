@@ -961,9 +961,13 @@ def _merge_repeated_info(rep: Report):
                 subjects.append(head)
         body = items[0].message.split(": ", 1)[-1].split(";")[0].strip()
         body = re.sub(r"^[A-Z0-9][A-Za-z0-9]*: ", "", body)
+        # The noun follows the category: figure notes are not compound notes
+        # (an unqualified "4 compounds: raster checks skipped" was nonsense).
+        noun = {"figures": "display item(s)", "references": "reference(s)",
+                "journal": "journal field(s)"}.get(items[0].category, "compound(s)")
         keep.append(items[0].__class__(
             code, "info", items[0].category,
-            f"{len(items)} compounds: {body} ({', '.join(subjects[:10])}"
+            f"{len(items)} {noun}: {body} ({', '.join(subjects[:10])}"
             f"{'…' if len(subjects) > 10 else ''}).",
             items[0].hint, dict(items[0].data)))
     rep.issues = keep

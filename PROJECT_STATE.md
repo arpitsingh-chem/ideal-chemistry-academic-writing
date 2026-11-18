@@ -52,8 +52,8 @@ package artefacts    paperforge-2.4.0-py3-none-any.whl  (888,022 B)
                      sha256 735468c3…96e571 (wheel) · 2b8df551…82484ed (sdist)
 licence              MIT for software (LICENSE-CODE) · CC BY 4.0 for docs+data (LICENSE)
                      copyright (c) 2026 Arpit Singh · owner decision D-1/D-2, 2026-11-18
-manifest             217 files · 4,221,727 B · SHA-256 per file, verifies clean
-commits on branch    7 (see `git log --oneline main..HEAD`)
+manifest             215 files · 4,235,829 B · SHA-256 per file, verifies clean
+commits on branch    12 (see `git log --oneline main..HEAD`)
 python               3.13.18 in this environment; CI matrix 3.10–3.13
 ```
 

@@ -44,11 +44,11 @@ figures = ["Pillow>=9", "matplotlib>=3.5"]
 docx = ["python-docx>=1.0"]
 structures = ["rdkit>=2023.9"]
 dev = [
-  "pytest>=7",
-  "pytest-cov>=4",
-  "pypdf>=3",
-  "ruff>=0.5",
-  "build>=1.0",
+  "pytest>=9.2.0",
+  "pytest-cov>=7.1.0",
+  "pypdf>=7.1.0",
+  "ruff>=0.17.5",
+  "build>=1.6.1",
 ]
 all = ["paperforge[figures,docx,structures,dev]"]
 

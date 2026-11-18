@@ -33,6 +33,9 @@ MANIFEST = ROOT / "MANIFEST.md"
 EXCLUDED_DIRS = {
     ".git", "__pycache__", ".pytest_cache", ".ruff_cache", ".mypy_cache",
     "build", "dist", ".venv", "venv", "node_modules", ".idea", ".vscode",
+    # local build/install artefacts: an editable install creates egg-info, which is
+    # git-ignored and must not appear in a manifest of *tracked* content.
+    "paperforge.egg-info", "*.egg-info",
 }
 EXCLUDED_SUFFIXES = {".pyc", ".pyo", ".orig", ".rej", ".sqlite3", ".sqlite3-journal", ".db"}
 EXCLUDED_NAMES = {"MANIFEST.md", ".DS_Store", "refcache.json"}
@@ -45,7 +48,7 @@ def _iter_files() -> list[Path]:
         if not path.is_file():
             continue
         rel = path.relative_to(ROOT)
-        if any(part in EXCLUDED_DIRS for part in rel.parts):
+        if any(part in EXCLUDED_DIRS or part.endswith(".egg-info") for part in rel.parts):
             continue
         if path.suffix in EXCLUDED_SUFFIXES or path.name in EXCLUDED_NAMES:
             continue

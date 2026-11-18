@@ -7,6 +7,7 @@ so the report can be used by a human *and* by CI.
 """
 from __future__ import annotations
 
+import csv
 import re
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -638,6 +639,80 @@ def json_free(obj) -> str:
     return " ".join(str(v) for v in obj.values()) if isinstance(obj, dict) else str(obj)
 
 
+#: Column-name pattern -> (label, lower bound, upper bound, severity, hint).
+#: Physical-range validation for *declared CSV tables*. Added in v2.4.0: a
+#: black-box test showed that changing a yield in ``data/scope.csv`` from 94 to
+#: 194 left the manuscript at 100.0/100, because table cells were used only as
+#: grounding numbers and never validated.
+_TABLE_RULES = (
+    (r"yield|conversion|purity|\bee\b|\bde\b|selectivity|recovery|ratio",
+     "percentage", 0.0, 100.0, "error",
+     "A percentage outside 0-100 is arithmetically impossible; recheck the value or the column."),
+    (r"mmol|\bmol\b|mass|weight|volume|conc", "amount", 0.0, None, "error",
+     "A negative amount, mass or volume is not physically meaningful."),
+    (r"time|hour|minute|second", "duration", 0.0, None, "warn",
+     "A negative duration is not physically meaningful."),
+    (r"temp|temperature", "temperature", -273.15, None, "error",
+     "A temperature below absolute zero is impossible."),
+)
+
+
+def _parse_table(path) -> tuple[list[str], list[list[str]]]:
+    """Read a CSV table with delimiter sniffing; returns (header, rows)."""
+    with open(path, encoding="utf-8-sig", newline="") as fh:
+        sample = fh.read(4096)
+        fh.seek(0)
+        try:
+            dialect = csv.Sniffer().sniff(sample, delimiters=",;\t")
+        except csv.Error:
+            dialect = csv.excel
+        rows = list(csv.reader(fh, dialect))
+    return (rows[0], rows[1:]) if rows else ([], [])
+
+
+def _cell_number(cell: str) -> float | None:
+    """Parse a numeric table cell, tolerating '%', '± sd' and unicode minus."""
+    text = str(cell or "").strip().replace("\u2212", "-")
+    match = re.match(r"^([+-]?\d+(?:\.\d+)?)\s*(?:±.*|%.*|\s*%)?$", text)
+    return float(match.group(1)) if match else None
+
+
+def check_table_values(project: Project, rep: Report) -> None:
+    """Flag physically impossible values in declared data tables."""
+    for table in project.tables:
+        if not table.file:
+            continue
+        path = project.path(table.file)
+        if not path.exists():
+            continue                       # TAB-MISSING already covers this
+        try:
+            header, rows = _parse_table(path)
+        except OSError as exc:
+            rep.add("TAB-UNREADABLE", "error", "figures",
+                    f"{table.file}: could not be read ({exc}).", "Check the file path and encoding.")
+            continue
+        for col, name in enumerate(header):
+            rule = next((r for r in _TABLE_RULES if re.search(r[0], str(name), re.I)), None)
+            if rule is None:
+                continue
+            _pattern, label, lower, upper, severity, hint = rule
+            bad = []
+            for line_no, row in enumerate(rows, start=2):   # 2 = first data row in a CSV
+                if col >= len(row):
+                    continue
+                value = _cell_number(row[col])
+                if value is None:
+                    continue
+                if (lower is not None and value < lower) or (upper is not None and value > upper):
+                    bad.append((line_no, str(row[col]).strip()))
+            if bad:
+                shown = "; ".join(f"line {n}: {v}" for n, v in bad[:4])
+                rep.add("TAB-IMPOSSIBLE-VALUE", severity, "evidence",
+                        f"{table.file}: column {str(name)!r} has {len(bad)} {label} value(s) "
+                        f"outside the physical range ({shown})" + (" ..." if len(bad) > 4 else ""),
+                        hint, file=table.file, column=str(name), count=len(bad))
+
+
 def check_style(project: Project, profile: JournalProfile, rep: Report, prose: str) -> None:
     st = style_stats(prose)
     rep.metrics.update({k: v for k, v in st.items() if k not in rep.metrics})
@@ -851,6 +926,7 @@ def check_project(project: Project, journal: str | None = None, article_type: st
     check_evidence(project, prof, rep, prose, evidence)
     check_references(project, prof, rep, ref_report=ref_report, offline=offline)
     check_figures(project, prof, rep, abstract + "\n" + prose)
+    check_table_values(project, rep)
     check_journal(project, prof, rep, prose)
     check_ethics(project, prof, rep, prose + "\n" + abstract)
     check_style(project, prof, rep, narrative or prose)

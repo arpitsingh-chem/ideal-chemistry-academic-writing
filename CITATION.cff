@@ -1,25 +1,43 @@
 cff-version: 1.2.0
-message: "If you use this toolkit in preparing academic work, please cite it as follows."
-title: "PaperForge — Ideal Chemistry Academic Writing (v2)"
+message: "If you use PaperForge in preparing academic work, please cite it as below."
+title: "PaperForge: a chemistry manuscript engine with global research intelligence"
 abstract: >-
-  PaperForge: a chemistry-aware manuscript engine that turns structured data,
-  figures and verified references into a submission-ready manuscript, scoring it
-  against 90 machine-readable rules and 261 journal profiles built from 1,616
-  publications of the IISER Bhopal Department of Chemistry. Includes LaTeX/Word/
-  Markdown templates, a journal matcher, reference verification (Crossref,
-  retractions), structure/TOC drawing, and submission packaging.
-keywords:
-  - academic writing
-  - chemistry
-  - LaTeX templates
-  - thesis template
-  - peer review
-  - research methodology
-  - publishing
-  - IISER Bhopal
+  PaperForge composes, verifies, scores and packages chemistry manuscripts against 113
+  machine-readable rules and 261 journal profiles, and provides a provider-based research
+  intelligence layer that queries eleven open scholarly indexes (OpenAlex, Crossref,
+  Europe PMC, arXiv, DataCite, DOAJ, Unpaywall, Semantic Scholar, ORCID, ROR, PubChem),
+  normalises their records with explicit provenance, deduplicates them under an auditable
+  rule set, and reports its own coverage gaps. It includes a preserved 1,616-work
+  institutional dataset for the IISER Bhopal Department of Chemistry.
+type: software
 license: CC-BY-4.0
-date-released: "2026-10-19"
-version: "2.1.0"
+date-released: "2026-11-18"
+version: "2.4.0"
+keywords:
+  - chemistry
+  - scholarly metadata
+  - academic writing
+  - openalex
+  - crossref
+  - bibliometrics
+  - reproducibility
+  - mass spectrometry
+  - peer review
+  - IISER Bhopal
+# NOTE: the copyright holder's legal name is an open question — CITATION.cff (inherited)
+# says "Arpit Singh" while the project brief says "Arpit Rajput". This file preserves the
+# inherited value; see LICENSING_AND_PROVENANCE_AUDIT.md, decision D-2.
 authors:
   - name: "Arpit Singh"
     affiliation: "Department of Chemistry, IISER Bhopal"
+    alias: "arpitsingh-chem"
+repository-code: "https://github.com/arpitsingh-chem/ideal-chemistry-academic-writing"
+url: "https://github.com/arpitsingh-chem/ideal-chemistry-academic-writing"
+references:
+  - type: dataset
+    title: "OpenAlex: a fully-open index of scholarly works, authors, and institutions"
+    authors:
+      - name: "OurResearch"
+    year: 2022
+    url: "https://openalex.org"
+    license: CC0-1.0

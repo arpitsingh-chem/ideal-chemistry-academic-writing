@@ -1,261 +1,361 @@
-# PaperForge — an ideal chemistry academic-writing engine
+# PaperForge
 
-[![tests](https://img.shields.io/badge/tests-173%20passing-brightgreen)](#verification)
-[![rules](https://img.shields.io/badge/rules-113-blue)](#the-rule-set)
-[![version](https://img.shields.io/badge/version-2.3.0-informational)](#)
+**A chemistry manuscript engine with a global research-intelligence layer.**
 
-**Turn a folder of CSV tables, figures, spectra metadata and DOIs into a submission-ready
-chemistry manuscript — checked against 113 machine-readable rules, 261 journal profiles and
-the chemistry itself.**
-
-> v1 of this repository was a *documentation and template* collection: excellent prose, but
-> the "checker" gave 0 errors / 0 warnings to a template containing a wrong HRMS value,
-> and the journal matcher returned the same 60 journals for every query.
-> **v2 is the toolkit those documents promised.** Everything below runs.
+Point it at your data, figures and DOIs and it composes, verifies, scores and packages a
+submission-ready chemistry manuscript. Point it at a research question and it searches the
+open scholarly indexes, normalises what they return, and tells you honestly what it found
+— and what it could not reach.
 
 ```
-             ┌──────────────┐    ┌───────────────┐    ┌──────────────┐
-  paper.yaml │  compose     │ →  │  verify       │ →  │  package     │
-  data/*.csv │  (draft.py)  │    │  (checks.py)  │    │  (bundle.py) │
-  figures/   │  MD/TeX/DOCX │    │ 113 rules     │    │  zip+checklist│
-  refs.bib   └──────────────┘    └───────────────┘    └──────────────┘
-                     ↑                   ↑
-              chem.py (masses, DBE,   journals.py (261 profiles,
-              yields, NMR integrals)  per-paper TF-IDF matcher)
+pip install -e ".[figures,docx,dev]"     # Python ≥ 3.10; one required dependency (PyYAML)
+
+paperforge doctor                                    # environment + chemistry self-test
+paperforge check examples/demo-paper                 # → 100.0/100, grade A+
+paperforge research search "photoredox C–H arylation" --limit 5
+paperforge institution stats                         # the bundled IISER Bhopal collection
 ```
+
+**State of this release:** version 2.4.0 · **349 tests passing, 3 network-marked skips** ·
+wheel and sdist built and installed in clean virtual environments · 11 scholarly-provider
+adapters · 115 manuscript rules · 261 journal profiles (5 verified per-journal, 256
+inherited family defaults — see [Honest limitations](#10-honest-limitations)).
 
 ---
 
-## 1. Install and run in 30 seconds
+## 1. What PaperForge is for
+
+Two problems, one engine.
+
+**Writing a chemistry paper is a verification problem.** Chemists produce structured facts
+— formulae, yields, HRMS values, NMR integrals, spectra, crystallographic deposits — and
+manuscripts are checked against them by tired humans at 2 a.m. PaperForge makes those
+cross-checks machine-readable: a formula that cannot exist, a mass that does not match its
+formula, a yield that contradicts its own mass, an integral that does not sum to the
+molecular formula, a reference that has been retracted.
+
+**Finding the literature is a coverage problem.** A search that silently returns nothing
+from a source that timed out is worse than no search. PaperForge queries eleven open
+indexes through independent adapters, records which ones answered, deduplicates what comes
+back with an auditable rule set, and reports its own gaps.
+
+It never invents data. Unknown metadata is `None`, not a guess; a failed provider is
+reported as failed, not silently dropped.
+
+---
+
+## 2. Install
 
 ```bash
-python3 -m pip install -e ".[figures,docx,structures]"   # RDKit optional but recommended
+git clone https://github.com/arpitsingh-chem/ideal-chemistry-academic-writing
+cd ideal-chemistry-academic-writing
+python3 -m pip install -e ".[figures,docx,dev]"      # add ,structures for RDKit drawing
 
-python3 -m paperforge doctor                             # environment + chemistry self-test
-python3 -m paperforge new my-paper --journal "Organic Letters"
-python3 -m paperforge check examples/demo-paper           # → 100.0/100 (A+)
-python3 -m paperforge draft examples/demo-paper --format all --cover-letter --highlights
+paperforge doctor
 ```
 
-Requires Python ≥ 3.10. `tectonic` (or any LaTeX engine) is only needed to turn the
-generated `.tex` into a PDF; `rdkit` only to draw structures from SMILES.
+| Extra | Adds | Needed for |
+|---|---|---|
+| *(base)* | PyYAML | checking, drafting, references, journals, research |
+| `figures` | Pillow, matplotlib | figure dpi/size checks, TOC graphics, demo rebuilds |
+| `docx` | python-docx | DOCX output |
+| `structures` | RDKit | `paperforge scheme` (SMILES → scheme/TOC images) |
+| `dev` | pytest, pypdf, ruff, build | running the test suite |
 
-### The demo project is the proof
-
-Two independent example projects prove the engine is not tuned to one subfield:
-
-* `examples/demo-paper/` — organic photoredox (Organic Letters), 8 compounds, 100.0/100.
-* `examples/second-paper/` — organometallic photophysics/bioinorganic (Dalton Transactions),
-  6 Ir(III) complexes, 4 display items, 8 DOI-verified references, 99.7/100, 8-page PDF.
-
-The first is a synthetic but *physically consistent* study — a photoredox C–H arylation of
-quinoxalin-2(1H)-ones with eight products `3a`–`3h`:
-
-| compound | R | yield / % | formula | [M+H]⁺ calcd |
-|---|---|---|---|---|
-| 3a | Ph | 94 | C14H10N2O | 223.0866 |
-| 3b | 4-MeC6H4 | 88 | C15H12N2O | 237.1022 |
-| 3c | 4-MeOC6H4 | 81 | C15H12N2O2 | 253.0972 |
-| 3d | 4-ClC6H4 | 76 | C14H9ClN2O | 257.0476 |
-| 3e | 4-CF3C6H4 | 72 | C15H9F3N2O | 291.0740 |
-| 3f | 4-NO2C6H4 | 68 | C14H9N3O3 | 268.0717 |
-| 3g | 2-naphthyl | 64 | C18H12N2O | 273.1022 |
-| 3h | 3-thienyl | 61 | C12H8N2OS | 229.0430 |
-
-From it, with **no manual editing**, `paperforge` produces: abstract → 3 sections → 2 tables
-from CSV → Figures 1–2 + Scheme 1 + journal-exact TOC graphic → Experimental for all 8
-compounds → SI → CRediT/COI/funding/data/safety/AI statements → cover letter → highlights →
-DOCX and an 8-page PDF, at 100.0/100 with 8/8 DOIs verified.
+`tectonic` (or any LaTeX engine) is only needed to turn the generated `.tex` into a PDF.
 
 ---
 
-## 2. Command reference
+## 3. Quick start: a manuscript
 
-| command | what it does |
+```bash
+paperforge new my-paper --journal "Organic Letters"
+cd my-paper                       # edit paper.yaml, data/*.csv, figures/, refs/
+paperforge refs verify .          # Crossref-check every DOI, flag retractions
+paperforge check .                # 115 rules, 0–100 score, exits non-zero on a gate
+paperforge draft . --format all --cover-letter --highlights
+paperforge si .                   # Supporting Information .tex
+paperforge bundle . --strict      # submission zip + checklist + manifest
+```
+
+A project is a folder: `paper.yaml` (authors, journal, compounds, sections), `data/*.csv`
+(tables), `figures/`, `refs/refs.bib`. `paperforge ingest <folder>` builds one from an
+existing research directory.
+
+### The two demo projects
+
+| Project | Field | Journal | Result |
+|---|---|---|---|
+| `examples/demo-paper` | organic photoredox, 8 compounds | Organic Letters | 100.0/100, 8/8 DOIs verified |
+| `examples/second-paper` | organometallic photophysics, 6 Ir(III) complexes | Dalton Transactions | 99.7/100 |
+
+Both are synthetic but *physically consistent*: every mass, yield and integral in them is
+a real calculation, and the hallucinations that v1 shipped (an impossible HRMS, a 109.9 %
+yield) are now regression tests.
+
+---
+
+## 4. Quick start: research intelligence
+
+```bash
+export PF_MAILTO=you@example.org        # required by Unpaywall, polite for the others
+export OPENALEX_API_KEY=...             # optional but strongly recommended (see below)
+
+paperforge research providers           # what is available, and what is blocked, with reasons
+paperforge research search "lanthanide single molecule magnet" --limit 5
+paperforge research fetch 10.1021/jacs.5c13581      # reconcile one DOI across providers
+paperforge research sync "photoredox catalysis" --db research.sqlite3 --limit 50
+paperforge research coverage --db research.sqlite3  # measured coverage, including gaps
+paperforge research dedup --db research.sqlite3     # duplicate *proposals*, never silent merges
+paperforge research export --db research.sqlite3 --out topic.json
+```
+
+A real run, verbatim:
+
+```
+$ paperforge research sync "photoredox catalysis" --db final.sqlite3 --limit 10
+  FAIL openalex         rate_limited: Insufficient budget … ($0.0008 remaining; resets at midnight UTC)
+  OK   crossref           10 record(s)  (index reports   336 485)
+  OK   europepmc          10 record(s)  (index reports     7 090)
+  OK   arxiv              10 record(s)  (index reports        10)
+  OK   datacite           10 record(s)  (index reports       729)
+  OK   doaj               10 record(s)  (index reports       317)
+  FAIL semantic_scholar rate_limited: Too Many Requests
+found 50, unique 50, merged 0, inserted 50, updated 0, unchanged 0
+note: 2 provider(s) unavailable — results are incomplete, not empty
+```
+
+Two providers failed. The run still finished, the failure is recorded in the store's
+`provider_state` table, and the message says the results are incomplete. That behaviour is
+the feature.
+
+### Why an OpenAlex key
+
+Keyless OpenAlex requests share **one daily budget per IP address**, and this audit
+exhausted it. A free key (from `https://openalex.org/settings/api`) has its own budget.
+PaperForge reads `OPENALEX_API_KEY` and will not retry a spent daily quota inside a run —
+it records `retryAfter` and moves on.
+
+---
+
+## 5. Scholarly sources
+
+Eleven adapters, each verified against the live API on **2026-11-18**:
+
+| Source | Discovery | DOI | OA | Citations | Retraction | Notes |
+|---|---|---|---|---|---|---|
+| OpenAlex | ✅ | ✅ | ✅ | ✅ | ✅ | keyless quota is shared per IP; free key advised |
+| Crossref | ✅ | ✅ | – | ✅ | ✅ | authoritative for the version of record and retractions |
+| Europe PMC | ✅ | ✅ | ✅ | ✅ | ✅ | PubMed + preprint index in one query |
+| arXiv | ✅ | – | ✅ | – | – | preprints; 3 s request interval respected |
+| DataCite | ✅ | ✅ | ✅ | ✅ | – | datasets, software, Zenodo/crystallography DOIs |
+| DOAJ | ✅ | ✅ | ✅ | – | – | vetted fully-open-access journals |
+| Unpaywall | enricher | ✅ | ✅ | – | – | requires a contact e-mail |
+| Semantic Scholar | ✅ | ✅ | ✅ | ✅ | – | anonymous tier throttles aggressively |
+| ORCID | identity | – | – | – | – | author iDs, check-digit validated |
+| ROR | identity | – | – | – | – | institution identity |
+| PubChem | compound | – | – | – | – | independent formula/mass cross-check |
+
+**Documented as unavailable, not faked** (evidence in [`DATA_SOURCES.md`](DATA_SOURCES.md)):
+ChemRxiv (HTTP 403 Cloudflare challenge), Google Scholar (no API; scraping violates ToS),
+Scopus and Web of Science (subscription), Dimensions (registered research access only),
+CORE (API key), NIST Chemistry WebBook (no API).
+
+---
+
+## 6. What the chemistry engine actually checks
+
+| Check | Example it catches |
+|---|---|
+| Formula parse (Hill, brackets, hydrates, charges) | `CuSO4·5H2O·2H2O` scaled wrongly; `C7H7+` read as `CH` |
+| Mono/average mass, adducts, ppm | `[M+H]⁺ for C₁₄H₁₀NO₂S` reported as 256.0427 (true 257.0505) |
+| Radical-ion adducts | `[M]⁺·` computed without the electron mass (2.14 ppm at m/z 256) |
+| Degree of unsaturation | a negative DBE, or a half-integer DBE for fixed-valence elements |
+| Yield ↔ mass ↔ mmol | `0.242 g` claimed for 0.86 mmol at 82 % is 109.9 % — the true value is 0.181 g |
+| ¹H integral sum vs formula | 7 H reported for a 10-H molecule |
+| ¹³C signal count | 20 signals for a 14-carbon formula |
+| Evidence completeness | a crystal structure without a CCDC number; ">99 % pure" with no HPLC/GC |
+| References | unresolvable DOI, unknown citation key, **retracted reference (Crossref forward lookup)** |
+
+DBE uses the generalised expression `1 + ½Σnᵢ(vᵢ−2) − ½q`, so triphenylphosphine,
+TMSCl and boronic acids are no longer reported as impossible molecules. Where an element
+has variable valence, the finding is downgraded to a note instead of a hard error — the
+tool does not cry wolf.
+
+**What it does not do:** it verifies arithmetic and internal consistency. A formula can be
+perfectly self-consistent and the compound still non-existent, and a correct HRMS
+calculation says nothing about whether a measurement was honest.
+
+---
+
+## 7. Journal intelligence
+
+261 profiles (`paperforge/data/journals.csv` + `journal_limits.json`), with:
+
+* publisher family, scope terms, aliases, article types;
+* abstract/body/figure/reference limits, TOC graphic dimensions;
+* `source` URL and a `verified` flag **per profile**.
+
+| Status | Count | Meaning |
+|---|---|---|
+| per-journal verified limits | **5** | limits read from that journal's current author guidelines |
+| publisher-family defaults, `verified: false` | **256** | a conservative family-level summary, explicitly not journal-verified |
+
+The matcher is a per-paper TF-IDF model over the captured corpus; `paperforge journals
+match "topic"` ranks journals and `paperforge retarget --journal X` diffs what must change.
+
+APC and impact-factor columns exist and are **empty**: impact factors are proprietary and
+APC values change, so neither is fabricated. This README no longer claims otherwise (the
+v2.3 README did — see [`AUDIT_REPORT.md`](AUDIT_REPORT.md) §4).
+
+---
+
+## 8. Command reference
+
+| Command | What it does |
 |---|---|
 | `new PATH` | scaffold `paper.yaml`, `data/`, `figures/`, `refs/` |
 | `ingest FOLDER --out P` | turn a research folder (CSV/figures/.bib) into a project |
 | `context PATH` | print the grounded evidence pack for an LLM |
-| `journals list/search/show` | 261-journal database: scope terms, IF, APC, OA, limits |
-| `journals match "topic"` | per-paper TF-IDF ranking over 1,616 captured works |
-| `refs verify PATH` | Crossref check every DOI; writes `refs.bib` + `references.md`; flags retractions |
-| `refs add PATH DOI…` | resolve + append verified entries |
-| `check PATH` / `check --file X.tex\|.md\|.docx` | the 87-rule engine, 0–100 score, grade |
+| `check PATH` / `check --file X.tex\|.md\|.docx` | 115 rules, 0–100 score, grade |
 | `score PATH --min 90` | CI gate (non-zero exit under the bar) |
-| `draft PATH --format all` | Markdown, LaTeX, DOCX, TXT + `--cover-letter`, `--highlights` |
+| `draft PATH --format all` | Markdown, LaTeX, DOCX, TXT (`--cover-letter`, `--highlights`) |
 | `si PATH` | Supporting Information `.tex` |
 | `figures PATH` | dpi/size audit + TOC dimension check |
-| `scheme reaction "A>>B"` | RDKit reaction scheme with conditions, labels, yields |
-| `scheme toc "A>>B" --journal "Chem. Commun."` | TOC graphic at exact cm/dpi for that journal |
-| `retarget PATH --journal X` | field-by-field diff: what must change to submit elsewhere |
-| `bundle PATH --strict` | submission zip + checklist + manifest; `--fail-on`, `--min-score` |
-| `doctor` | environment + chemistry self-test |
+| `scheme reaction "A>>B"` | RDKit reaction scheme with conditions and yields |
+| `journals list/search/match/show` | the journal database |
+| `refs verify PATH` / `refs add PATH DOI…` | Crossref verification, retraction flags, `refs.bib` |
+| `retarget PATH --journal X` | field-by-field diff for another journal |
+| `bundle PATH --strict` | submission zip + checklist + manifest |
 | `rules` | list every rule code |
+| `doctor` | environment + chemistry self-test |
+| **`research providers`** | adapters, capabilities, known-unavailable sources |
+| **`research search QUERY`** | query every configured source at once |
+| **`research fetch DOI`** | resolve one identifier across providers and reconcile |
+| **`research sync QUERY --db F`** | idempotent synchronisation into a SQLite store |
+| **`research coverage --db F`** | measured coverage, provider health, known gaps |
+| **`research dedup --db F`** | duplicate proposals with their reasoning |
+| **`research export --db F --out F`** | clean dataset + coverage sidecar |
+| **`institution stats\|search\|faculty\|journals`** | the preserved IISER Bhopal collection |
 
-Exit codes: `0` OK · `1` score/gate failure · `2` bad input. Every command takes
-`--json` where a machine-readable report makes sense.
+Exit codes: `0` OK · `1` gate failed **or** at least one provider unavailable · `2` bad input.
+Every command that produces a report accepts `--json`.
 
 ---
 
-## 3. What makes it chemistry-aware, not just text-aware
+## 9. Architecture
 
-Text linters cannot tell you that your mass is wrong. PaperForge parses the chemistry:
+```
+                    ┌──────────────────────────────────────────┐
+                    │              paperforge CLI              │
+                    │  check draft refs journals bundle …      │
+                    │  research …   institution …              │
+                    └───────┬───────────────────────┬──────────┘
+                            │                       │
+        ┌───────────────────▼──────┐   ┌────────────▼─────────────────────┐
+        │  Manuscript engine       │   │  Research layer                  │
+        │  project  draft  checks  │   │  schema  dedup  store  pipeline  │
+        │  chem  figures  schemes  │   │  coverage                        │
+        │  refs  journals  render  │   └────────────┬─────────────────────┘
+        │  bundle                  │                │
+        └──────────────────────────┘   ┌────────────▼─────────────────────┐
+                                       │  providers/ (11 adapters)        │
+                                       │  base.py  HttpClient: retry,     │
+                                       │  backoff, Retry-After, quota     │
+                                       │  registry.py: status + BLOCKED   │
+                                       └────────────┬─────────────────────┘
+                                                    │ HTTPS, open APIs only
+                     OpenAlex · Crossref · Europe PMC · arXiv · DataCite ·
+                     DOAJ · Unpaywall · Semantic Scholar · ORCID · ROR · PubChem
+```
 
-* **Formula engine** — Hill order, hydrates (`CuSO₄·5H₂O` = 249.677), adducts, charged
-  species; monoisotopic and average masses; DBE (detects non-integer and negative DBE).
-* **HRMS arithmetic** — calcd `[M+H]⁺`, `[M+Na]⁺`, `[M−H]⁻` from the neutral formula,
-  compared with the reported value at a configurable ppm window. *The v1 template's
-  HRMS 256.0427 for C₁₄H₁₀NO₂S was off by 0.99 ppm and is flagged `CHEM-HRMS-CALCD`;
-  the correct value is 257.0505.*
-* **Yield ↔ mass ↔ mmol** — `0.242 g` claimed for 0.86 mmol at 82 % is a 109.9 % yield;
-  reported as `CHEM-YIELD-MASS` with the number that *should* be there (0.181 g).
-* **NMR integrals vs formula** — sums the ¹H integrals and compares with the formula's H
-  count (7 H reported for a 10-H molecule is an error, not a style nit).
-* **Purity/evidence grounding** — ">99 % pure" without HPLC/GC evidence, or a crystal
-  structure without a CCDC number, is a blocker (`EVI-*`), not a note.
-* **Reference hygiene** — unknown citation keys (`REF-MISSING-KEY`), DOIs that do not
-  resolve, retracted references, duplicate entries, non-ASCII that breaks T1 fonts.
+Details, decisions and rejected alternatives: [`ARCHITECTURE.md`](ARCHITECTURE.md).
+Data model and schema: `paperforge/research/schema.py`. Storage: SQLite, schema version 1,
+ordered migrations.
 
-## 4. The rule set
+---
 
-87 codes across eight weighted dimensions:
+## 10. Honest limitations
 
-| dimension | weight | examples |
-|---|---|---|
-| structure | 15 % | title length, abstract presence/split, section grammar, heading order |
-| abstract | 10 % | word limit for the *resolved* article type, the five moves (context/gap/approach/result/impact) |
-| evidence | 20 % | formula↔HRMS, yield↔mass, NMR H-count, CCDC, purity claims |
-| references | 15 % | missing keys, unresolvable DOIs, **retractions (forward lookup at Crossref)**, duplicates, style |
-| figures | 10 % | dpi < 300, physical width vs journal column width, TOC aspect |
-| journal | 15 % | abstract/body word caps, page caps, required statements per publisher |
-| ethics | 10 % | CRediT, COI, funding, data availability, AI disclosure, safety |
-| style | 5 % | hype words, hedging density, sentence-length CV, unit styling |
+1. **Journal limits are verified for 5 of 261 journals.** The rest inherit a family
+   default marked `verified: false`. Always confirm on the journal's current author
+   guidelines page before submitting.
+2. **No impact factors, no acceptance rates, no APC values** — deliberately absent rather
+   than invented.
+3. **Subdiscipline classification is a keyword model, not benchmarked.** It returns `None`
+   when unsure.
+4. **Retraction status is source-scoped.** `none_known` means "no notice found in the
+   sources queried", never "this paper is sound".
+5. **Metadata ≠ truth.** Citation counts are point-in-time and provider-specific.
+6. **No full-text, citation-graph or research-gap analysis yet** — see [`ROADMAP.md`](ROADMAP.md).
+7. **Coverage is what you sync.** The bundled institutional collection is a 1,616-work
+   snapshot, not a live mirror; `institution stats` says so on every run. (The v2.3 README
+   quoted **1,707** works; the shipped file contains **1,616**, verified 2026-11-18. The
+   earlier figure was wrong and is corrected here rather than quietly repeated.)
+8. **Chemistry checks verify arithmetic, not science.**
+9. **The manuscript engine is tuned to synthetic/characterisation chemistry.** Other
+   subdisciplines are supported by the research layer, not yet by dedicated manuscript
+   validators (`ROADMAP.md`).
 
-Scoring: 100 − 12·errors − 4·warnings − 0.5·notes, any **critical** finding caps at 55.
-≥ 90 submission-ready · ≥ 75 minor revision · ≥ 60 major revision. Grades A+ ≥ 95 … F.
+---
 
-`paperforge rules` prints the live list; `tests/` encodes the historical bugs each rule
-exists to catch.
-
-## 5. Journal knowledge
-
-261 profiles (`paperforge/data/journals.csv`, `paperforge/data/journal_limits.json`) with publisher family,
-verified word/page limits, TOC graphic size, OA status, APC and scope terms.
-Article-type resolution is alias-first, so `"JACS letter"` → communication (2,200 words),
-`"Org. Lett. paper"` → the single Organic Letters type (200-word abstract),
-`"Angew. letter"` → communication (200-word abstract, 5.5 × 5.0 cm TOC graphic).
-
-The matcher is a per-paper TF-IDF model: each captured paper is a document, the query is
-scored against the best three papers of a journal, with a mild log-frequency prior
-(× 0.75 below three papers). Five probe topics:
-
-| probe | top-3 |
-|---|---|
-| gold catalysis | Angew. Chem. Int. Ed. 83.2 · Chem. Eur. J. 79.3 · Chem. Commun. 79.0 |
-| SMM lanthanides | Dalton 95.9 · Chem. Commun. 86.4 · Inorg. Chem. 73.4 |
-| POPs/CO₂ capture | Chem. Commun. 100 · Chem. Asian J. 78.7 · ACS Omega 65.4 |
-| photoredox C–H arylation | Chem. Commun. 100 · Org. Lett. 71.8 |
-| halogen bonds | J. Mol. Struct. 91.4 · Acta Cryst. A 89.5 · Cryst. Growth Des. 86.8 |
-
-## 6. Evidence base
-
-| Item | Value |
-|---|---|
-| Faculty analysed | 30 (all IISER Bhopal Department of Chemistry faculty) |
-| Publications | **1,616** works, 2009–2026 (OpenAlex, author-ID verified) |
-| Journals in which they published | **252** (253 venue names, 252 after merging the Angewandte split; ChemInform digest excluded) |
-| Journal profiles maintained | **261** |
-| Publisher families | ACS, RSC, Wiley-VCH, Elsevier, Springer, IUCr, preprint servers |
-
-Top journals by captured output (Angew. Int. Ed. merges the German/International records):
-
-| # | Journal | Papers |
-|---|---|---|
-| 1 | Chemical Communications | 97 |
-| 2 | Chemistry – A European Journal | 83 |
-| 3 | Organic Letters | 78 |
-| 4 | Angewandte Chemie International Edition | 66 |
-| 5 | ChemRxiv (preprints) | 61 |
-| 6 | Crystal Growth & Design | 53 |
-| 7 | Chemistry – An Asian Journal | 52 |
-| 8 | Dalton Transactions | 41 |
-| 9 | Inorganic Chemistry | 38 |
-| 10 | The Journal of Organic Chemistry | 36 |
-
-The v1 README quoted 1,707 publications / 257 journals and a top-10 that did not match
-the committed data. Those numbers are corrected here; `paperforge/data/publications-openalex.json`
-is the single source of truth and `paperforge journals list` reads from it.
-
-## 7. Field test (does it work for a stranger?)
-
-`FIELD-TEST.md` records eight black-box tasks run against a fresh clone — cold start,
-ingesting an unseen lab folder, planted defects, journal retargeting, malformed input,
-determinism, retraction detection and PDF rendering. **Mean 9.1/10**, and the two failures
-it found (a letter-spaced abstract from a string-valued field, and a missed retraction) are
-fixed in v2.2 with regression tests.
-
-`HARD-CASE-REPORT.md` is the adversarial follow-up: one project that is hostile in every
-dimension at once (Latin-1 over decimal commas, duplicate rows, a retracted DOI, a
-citation key containing `_`, a table whose CSV is missing, and a manuscript that is
-formally perfect but scientifically wrong). It found **14 defects, 8 of them silent** —
-including a swap of two yields that scored 95.2 A+. All are fixed in v2.3.
-
-## 8. Verification
+## 11. Testing
 
 ```bash
-python3 -m pytest tests/ -q            # 173 passed (+3 network)
-python3 -m paperforge check examples/demo-paper          # 100.0 / 100
-python3 -m paperforge refs verify examples/demo-paper    # 8/8 verified
-cd examples/demo-paper/build && tectonic -X compile manuscript.tex   # 8 pages
+python3 -m pytest                       # 349 passed, 3 skipped (network-marked)
+python3 -m pytest -m network            # the live-API tests, skipped by default
+python3 -m pytest tests/scientific -v   # independent chemistry reference values
+python3 -m pytest tests/adversarial -v  # transport faults, hostile payloads, exit codes
 ```
 
-The suite includes adversarial tests (50 kB random Unicode, 2,000-row tables, 160
-references, impossible formulae, negative yields, missing fields) and performance budgets
-(full check + compose + render < 3 s).
+| Suite | What it proves |
+|---|---|
+| `tests/unit` | provider parsing against recorded live payloads; schema semantics |
+| `tests/integration` | dedup, merge precedence, store idempotency, coverage, exports |
+| `tests/scientific` | masses/adducts/DBE against values derived outside this codebase (PubChem, CODATA, IUPAC) |
+| `tests/adversarial` | 429/timeout/HTML-instead-of-JSON, 10 k records, corrupt SQLite, CLI exit codes |
+| inherited v2 tests | the 173 behaviours that already worked remain working |
 
-## 9. Templates (now internally consistent)
-
-The v1 LaTeX templates shipped a fabricated characterisation block: HRMS `256.0427` for
-C₁₄H₁₀NO₂S (true `[M+H]⁺` = 257.0505), `0.242 g` for 0.86 mmol at 82 % (true 0.181 g), and
-¹H integrals summing to 7 for a 10-H formula — while the bundled checker reported
-0 errors. They have been replaced with verified values (C₁₄H₁₁NO₂S, MW 257.31, [M+H]⁺
-258.0583, 0.211 g, integrals = 11 H) and the fabricated bibliography has been replaced with
-eight Crossref-verified DOIs. `templates/` should contain no unverified number.
+The suite needs **no network**. Live checks are opt-in (`-m network`).
 
 ---
 
-## Repository map
+## 12. Data sources, licensing, citation
 
-```
-paperforge/          the engine (chem, journals, project, refs, figures, schemes,
-                     checks, draft, render, bundle, cli, llm)
-paperforge/data/      journal DB, limits, 1,616-work publication corpus
-templates/           LaTeX manuscript + thesis, Word, Markdown, review
-docs/                evidence-based guides 01–10 and the v2 architecture (11)
-examples/            demo project + journal-calibrated prose examples
-checklists/          pre-submission, thesis, peer-review
-scripts/             thin wrappers over paperforge (v1 scripts kept for reference)
-agents/              prompt packs: draft-from-data, reviewer-2, literature triage, rebuttal
-tests/               136 tests, including adversarial and regression guards
-```
-
-## Philosophy (unchanged, now enforced by code)
-
-1. **Journals are the spec** — every limit in `paperforge/data/` traces to a publisher guideline.
-2. **Originality is built, not patched** — the engine assembles *your* data and prose; it
-   never invents results. `llm-draft` is opt-in and grounded.
-3. **Reproducibility is a chemistry requirement** — formula, mass, yield and evidence
-   cross-checks are hard rules, not suggestions.
-4. **AI tools are assistants, not authors** — authorship, claims and data stay human-owned.
-
-## License & citation
-
-Content CC BY 4.0; code MIT. If this saves you a desk rejection, cite:
+* **Sources and their terms:** [`DATA_SOURCES.md`](DATA_SOURCES.md),
+  [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md).
+* **Coverage, measured:** [`GLOBAL_RESEARCH_COVERAGE.md`](GLOBAL_RESEARCH_COVERAGE.md).
+* **Licence:** this repository is distributed under **CC BY 4.0** (`LICENSE`). The v2.3
+  README claimed "code MIT" without an MIT licence existing; that claim has been removed
+  and the question of a code-specific licence is recorded as an open owner decision in
+  [`LICENSING_AND_PROVENANCE_AUDIT.md`](LICENSING_AND_PROVENANCE_AUDIT.md).
+* **Institutional mark:** the IISER Bhopal logo in the thesis template belongs to the
+  institution; forks should replace it (see `THIRD_PARTY_NOTICES.md` §3).
 
 ```bibtex
 @software{paperforge2026,
-  title  = {PaperForge: an ideal chemistry academic-writing engine},
+  title  = {PaperForge: a chemistry manuscript engine with global research intelligence},
+  author = {PaperForge contributors},
   year   = {2026},
-  note   = {Evidence base: 1,616 publications, IISER Bhopal Department of Chemistry}
+  version = {2.4.0},
+  url    = {https://github.com/arpitsingh-chem/ideal-chemistry-academic-writing},
+  note   = {Includes a preserved 1,616-work institutional dataset for the IISER Bhopal
+            Department of Chemistry (OpenAlex, CC0)}
 }
 ```
+
+---
+
+## 13. Contributing, security, roadmap
+
+* [`CONTRIBUTING.md`](CONTRIBUTING.md) — setup, test expectations, how to add a provider.
+* [`SECURITY.md`](SECURITY.md) — private vulnerability reporting.
+* [`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md) — Contributor Covenant 2.1.
+* [`ROADMAP.md`](ROADMAP.md) — what is planned, what is explicitly not.
+* [`CHANGELOG.md`](CHANGELOG.md) — 2.4.0 and the history before it.
+* [`docs/`](docs/) — tutorials, how-to guides, reference and explanations (Diátaxis).
+* [`AUDIT_REPORT.md`](AUDIT_REPORT.md) — the full pre-change audit, findings and evidence.
+
+The governing principle: **do not claim a capability that has not been executed and
+verified**, and prefer a documented "we cannot reach this source" over an integration that
+pretends.

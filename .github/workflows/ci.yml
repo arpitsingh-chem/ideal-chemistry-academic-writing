@@ -40,15 +40,22 @@ jobs:
       - name: Chemistry self-test
         run: python -m paperforge doctor
 
-      - name: Demo manuscript still scores 100
+      - name: Demo manuscript still scores >= 99 with no errors
         run: |
-          score=$(python -m paperforge check examples/demo-paper --json | python -c "import json,sys; print(json.load(sys.stdin)['score'])")
-          echo "score=$score"
-          python - "$score" <<'PY'
-          import sys
-          score = float(sys.argv[1])
+          python -m paperforge check examples/demo-paper --json > /tmp/demo.json
+          python - <<'PY'
+          import json
+
+          data = json.load(open("/tmp/demo.json", encoding="utf-8"))
+          # `check --json` nests the score object: {"score": {"score": 100.0, "counts": {...}}}
+          raw = data["score"]
+          result = raw if isinstance(raw, dict) else {"score": raw}
+          score = float(result["score"])
+          counts = result.get("counts", {})
+          print(f"demo score {score} · errors {counts.get('error', '?')} · "
+                f"warnings {counts.get('warn', '?')} · notes {counts.get('info', '?')}")
+          assert counts.get("error", 0) == 0, f"demo manuscript has errors: {counts}"
           assert score >= 99.0, f"demo manuscript regressed to {score}"
-          print(f"ok: demo manuscript at {score}")
           PY
 
       - name: Research layer is importable and reports its sources

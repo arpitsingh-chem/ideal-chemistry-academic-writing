@@ -85,6 +85,20 @@ packaging and CI. Backward compatible: every v2.3 command, API and file format s
   guessed at. 14 regression tests in `tests/scientific/test_table_plausibility.py`, and the
   rule count rises 113 → 115.
 
+### Fixed — the CI demo gate read the wrong JSON shape (`PF-023`)
+
+* The new workflow's "demo still scores 100" step did `json.load(...)["score"]` and treated the
+  result as a float. `check --json` returns `score` as an **object**
+  (`{"score": {"score": 100.0, "counts": {...}}}`), so the step raised
+  `ValueError: could not convert string to float: "{'score': 100.0, …}"` and all four matrix
+  jobs went red on the very first run of the workflow — while every local run was green,
+  because the same command was never executed locally in that exact form. The step now reads
+  `data["score"]["score"]` (accepting either shape) and additionally asserts `errors == 0`,
+  which is the assertion that actually matters.
+
+This is why `FINAL_QA_REPORT.md` lists CI as *not verified*: a workflow that has never run
+is a hypothesis, and this one was wrong.
+
 ### Fixed — missing optional dependency no longer blamed on the figure (`PF-022`)
 
 * Installing the wheel **without** the `figures` extra and running `check` on the demo
